@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Clock, Instagram, Mail, MapPin, Phone } from "lucide-react";
+import { Clock, Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
 import { useLang } from "@/context/LangContext";
 import { resolveMapsConfig } from "@/config/maps";
 
@@ -10,13 +10,19 @@ const Contact = () => {
   const items = [
     {
       icon: <MapPin size={18} />,
-      label: t("\u0393\u03b1\u03bb\u03b7\u03c3\u03c3\u03ac\u03c2, \u03a3\u03cd\u03c1\u03bf\u03c2", "Galissas, Syros"),
+      label: t(
+        "\u0393\u03b1\u03bb\u03b7\u03c3\u03c3\u03ac\u03c2, \u03a3\u03cd\u03c1\u03bf\u03c2",
+        "Galissas, Syros",
+      ),
       href: openUrl,
       external: true,
     },
     {
       icon: <Clock size={18} />,
-      label: t("\u039a\u03b1\u03b8\u03b7\u03bc\u03b5\u03c1\u03b9\u03bd\u03ac 09:00 - 22:00", "Daily 09:00 - 22:00"),
+      label: t(
+        "\u039a\u03b1\u03b8\u03b7\u03bc\u03b5\u03c1\u03b9\u03bd\u03ac 09:00 - 22:00",
+        "Daily 09:00 - 22:00",
+      ),
     },
     {
       icon: <Phone size={18} />,
@@ -35,6 +41,12 @@ const Contact = () => {
       href: "https://www.instagram.com/galissea_bar/",
       icon: <Instagram size={20} />,
       label: "Instagram",
+      external: true,
+    },
+    {
+      href: "https://www.facebook.com/galissea.bar/",
+      icon: <Facebook size={20} />,
+      label: "Facebook",
       external: true,
     },
     {
@@ -60,7 +72,10 @@ const Contact = () => {
       >
         <div className="mb-6 text-center">
           <h2 className="mb-1 font-display text-2xl font-bold text-primary">
-            {t("\u0395\u03c0\u03b9\u03ba\u03bf\u03b9\u03bd\u03c9\u03bd\u03af\u03b1", "Contact")}
+            {t(
+              "\u0395\u03c0\u03b9\u03ba\u03bf\u03b9\u03bd\u03c9\u03bd\u03af\u03b1",
+              "Contact",
+            )}
           </h2>
           <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
         </div>
@@ -70,7 +85,9 @@ const Contact = () => {
             const card = (
               <div className="flex min-h-12 items-center gap-3 rounded-xl bg-card/60 px-4 py-3.5 transition-colors hover:bg-card">
                 <span className="text-accent">{item.icon}</span>
-                <span className="font-body text-sm text-foreground">{item.label}</span>
+                <span className="font-body text-sm text-foreground">
+                  {item.label}
+                </span>
               </div>
             );
 
