@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import MenuSection from "@/components/MenuSection";
+import QrShareSection from "@/components/QrShareSection";
 import About from "@/components/About";
 import Gallery from "@/components/Gallery";
 import Location from "@/components/Location";
@@ -19,6 +20,7 @@ const Index = () => {
         <About />
         <Gallery />
         <Location />
+        <QrShareSection />
         <Contact />
         <Footer />
         <BackToTopButton />

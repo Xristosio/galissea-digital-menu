@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Clock, Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
 import { useLang } from "@/context/LangContext";
 import { resolveMapsConfig } from "@/config/maps";
+import { SOCIAL_LINKS } from "@/config/site";
 
 const Contact = () => {
   const { t } = useLang();
@@ -36,28 +37,16 @@ const Contact = () => {
     },
   ];
 
-  const quickActions = [
+  const socialLinks = [
     {
-      href: "https://www.instagram.com/galissea_bar/",
-      icon: <Instagram size={20} />,
+      href: SOCIAL_LINKS.instagram,
+      icon: <Instagram size={18} />,
       label: "Instagram",
-      external: true,
     },
     {
-      href: "https://www.facebook.com/galissea.bar/",
-      icon: <Facebook size={20} />,
+      href: SOCIAL_LINKS.facebook,
+      icon: <Facebook size={18} />,
       label: "Facebook",
-      external: true,
-    },
-    {
-      href: "tel:+302281045686",
-      icon: <Phone size={20} />,
-      label: t("\u039a\u03bb\u03ae\u03c3\u03b7", "Call"),
-    },
-    {
-      href: "mailto:galissea.bar@gmail.com",
-      icon: <Mail size={20} />,
-      label: t("\u0395\u03bc\u03b1\u03b9\u03bb", "Email"),
     },
   ];
 
@@ -108,20 +97,36 @@ const Contact = () => {
           })}
         </div>
 
-        <div className="mt-6 flex justify-center gap-3">
-          {quickActions.map((action) => (
-            <a
-              key={action.href}
-              href={action.href}
-              target={action.external ? "_blank" : undefined}
-              rel={action.external ? "noopener noreferrer" : undefined}
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-card/60 text-accent transition-colors hover:bg-card hover:text-primary"
-              aria-label={action.label}
-              title={action.label}
-            >
-              {action.icon}
-            </a>
-          ))}
+        <div className="mt-6 rounded-2xl border border-border/40 bg-card/45 p-4">
+          <h3 className="font-display text-lg font-semibold text-primary">
+            {t(
+              "\u039a\u03bf\u03b9\u03bd\u03c9\u03bd\u03b9\u03ba\u03ac \u0394\u03af\u03ba\u03c4\u03c5\u03b1",
+              "Social Media",
+            )}
+          </h3>
+          <p className="mt-1 font-body text-xs leading-relaxed text-muted-foreground">
+            {t(
+              "\u0391\u03ba\u03bf\u03bb\u03bf\u03c5\u03b8\u03ae\u03c3\u03c4\u03b5 \u03bc\u03b1\u03c2 \u03b3\u03b9\u03b1 \u03c3\u03c4\u03b9\u03b3\u03bc\u03ad\u03c2 \u03b1\u03c0\u03cc \u03c4\u03b7\u03bd \u03c0\u03b1\u03c1\u03b1\u03bb\u03af\u03b1 \u03c4\u03b7\u03c2 \u0393\u03b1\u03bb\u03b7\u03c3\u03c3\u03ac.",
+              "Follow us on.",
+            )}
+          </p>
+
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            {socialLinks.map((action) => (
+              <a
+                key={action.href}
+                href={action.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-background/75 px-3 py-2.5 font-body text-sm font-medium text-foreground transition-colors hover:bg-background"
+                aria-label={action.label}
+                title={action.label}
+              >
+                <span className="text-accent">{action.icon}</span>
+                <span>{action.label}</span>
+              </a>
+            ))}
+          </div>
         </div>
       </motion.div>
     </section>

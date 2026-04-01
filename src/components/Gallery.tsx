@@ -14,7 +14,10 @@ const Gallery = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          {t("\u0397 \u0391\u03c4\u03bc\u03cc\u03c3\u03c6\u03b1\u03b9\u03c1\u03ac \u03bc\u03b1\u03c2", "Our Atmosphere")}
+          {t(
+            "\u0397 \u0391\u03c4\u03bc\u03cc\u03c3\u03c6\u03b1\u03b9\u03c1\u03ac \u03bc\u03b1\u03c2",
+            "Our Place",
+          )}
         </motion.h2>
         <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
       </div>
