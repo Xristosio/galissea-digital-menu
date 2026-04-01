@@ -1,3 +1,14 @@
+import coffeeImg from "@/assets/menu/coffee.jpg";
+import juicesImg from "@/assets/menu/juices.jpg";
+import softdrinksImg from "@/assets/menu/softdrinks.jpg";
+import cocktailsImg from "@/assets/menu/cocktails.jpg";
+import beerWineImg from "@/assets/menu/beer-wine.jpg";
+import breakfastImg from "@/assets/menu/breakfast.jpg";
+import snacksImg from "@/assets/menu/snacks.jpg";
+import sandwichesImg from "@/assets/menu/sandwiches.jpg";
+import saladsImg from "@/assets/menu/salads.jpg";
+import dessertsImg from "@/assets/menu/desserts.jpg";
+
 export interface MenuItem {
   nameEl: string;
   nameEn: string;
@@ -10,7 +21,7 @@ export interface MenuCategory {
   id: string;
   nameEl: string;
   nameEn: string;
-  icon?: string;
+  image: string;
   items: MenuItem[];
 }
 
@@ -19,6 +30,7 @@ export const menuData: MenuCategory[] = [
     id: "coffee",
     nameEl: "Καφέδες",
     nameEn: "Coffee",
+    image: coffeeImg,
     items: [
       { nameEl: "Ελληνικός", nameEn: "Greek Coffee", price: "2.50" },
       { nameEl: "Εσπρέσο Μονός", nameEn: "Espresso Single", price: "2.50" },
@@ -36,6 +48,7 @@ export const menuData: MenuCategory[] = [
     id: "juices",
     nameEl: "Φρέσκοι Χυμοί",
     nameEn: "Fresh Juices",
+    image: juicesImg,
     items: [
       { nameEl: "Πορτοκάλι", nameEn: "Orange", price: "4.00" },
       { nameEl: "Καρπούζι", nameEn: "Watermelon", price: "4.50" },
@@ -48,6 +61,7 @@ export const menuData: MenuCategory[] = [
     id: "softdrinks",
     nameEl: "Αναψυκτικά",
     nameEn: "Soft Drinks",
+    image: softdrinksImg,
     items: [
       { nameEl: "Coca-Cola", nameEn: "Coca-Cola", price: "2.50" },
       { nameEl: "Coca-Cola Zero", nameEn: "Coca-Cola Zero", price: "2.50" },
@@ -63,6 +77,7 @@ export const menuData: MenuCategory[] = [
     id: "cocktails",
     nameEl: "Κοκτέιλ",
     nameEn: "Cocktails",
+    image: cocktailsImg,
     items: [
       { nameEl: "Μοχίτο", nameEn: "Mojito", descEl: "Ρούμι, lime, μέντα, σόδα", descEn: "Rum, lime, mint, soda", price: "9.00" },
       { nameEl: "Απερόλ Σπριτζ", nameEn: "Aperol Spritz", descEl: "Aperol, prosecco, σόδα", descEn: "Aperol, prosecco, soda", price: "9.00" },
@@ -76,6 +91,7 @@ export const menuData: MenuCategory[] = [
     id: "beer-wine",
     nameEl: "Μπύρα & Κρασί",
     nameEn: "Beer & Wine",
+    image: beerWineImg,
     items: [
       { nameEl: "Μπύρα Βαρελίσια", nameEn: "Draft Beer", price: "5.00" },
       { nameEl: "Μπύρα Φιάλη", nameEn: "Bottled Beer", price: "4.50" },
@@ -89,6 +105,7 @@ export const menuData: MenuCategory[] = [
     id: "breakfast",
     nameEl: "Πρωινά",
     nameEn: "Breakfast",
+    image: breakfastImg,
     items: [
       { nameEl: "Τοστ Κλασικό", nameEn: "Classic Toast", descEl: "Ζαμπόν, τυρί", descEn: "Ham, cheese", price: "3.50" },
       { nameEl: "Κρουασάν Βούτυρο", nameEn: "Butter Croissant", price: "2.50" },
@@ -103,6 +120,7 @@ export const menuData: MenuCategory[] = [
     id: "snacks",
     nameEl: "Σνακ",
     nameEn: "Snacks",
+    image: snacksImg,
     items: [
       { nameEl: "Πατάτες Τηγανιτές", nameEn: "French Fries", price: "3.50" },
       { nameEl: "Nachos με Τυρί", nameEn: "Cheese Nachos", descEl: "Με σάλτσα τυριού & guacamole", descEn: "With cheese sauce & guacamole", price: "7.00" },
@@ -115,6 +133,7 @@ export const menuData: MenuCategory[] = [
     id: "sandwiches",
     nameEl: "Σάντουιτς",
     nameEn: "Sandwiches",
+    image: sandwichesImg,
     items: [
       { nameEl: "Club Sandwich Κοτόπουλο", nameEn: "Chicken Club Sandwich", descEl: "Κοτόπουλο, μπέικον, μαρούλι, ντομάτα, μαγιονέζα", descEn: "Chicken, bacon, lettuce, tomato, mayo", price: "7.50" },
       { nameEl: "Club Sandwich Κλασικό", nameEn: "Classic Club Sandwich", descEl: "Ζαμπόν, τυρί, αυγό, μαρούλι", descEn: "Ham, cheese, egg, lettuce", price: "7.00" },
@@ -126,6 +145,7 @@ export const menuData: MenuCategory[] = [
     id: "salads",
     nameEl: "Σαλάτες",
     nameEn: "Salads",
+    image: saladsImg,
     items: [
       { nameEl: "Χωριάτικη", nameEn: "Greek Salad", descEl: "Ντομάτα, αγγούρι, φέτα, ελιές", descEn: "Tomato, cucumber, feta, olives", price: "7.00" },
       { nameEl: "Σαλάτα Σίζαρ", nameEn: "Caesar Salad", descEl: "Μαρούλι, κοτόπουλο, παρμεζάνα, κρουτόν", descEn: "Lettuce, chicken, parmesan, croutons", price: "8.00" },
@@ -136,6 +156,7 @@ export const menuData: MenuCategory[] = [
     id: "desserts",
     nameEl: "Γλυκά & Παγωτό",
     nameEn: "Desserts & Ice Cream",
+    image: dessertsImg,
     items: [
       { nameEl: "Cheesecake", nameEn: "Cheesecake", price: "5.50" },
       { nameEl: "Σοκολατόπιτα", nameEn: "Chocolate Cake", price: "5.50" },
