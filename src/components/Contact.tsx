@@ -1,66 +1,88 @@
-import { useLang } from "@/context/LangContext";
+import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, Clock, Instagram, Facebook } from "lucide-react";
+import { useLang } from "@/context/LangContext";
 
 const Contact = () => {
   const { t } = useLang();
 
+  const items = [
+    {
+      icon: <MapPin size={18} />,
+      label: "Galissas, Syros",
+      href: "https://maps.google.com/?q=Galissas+Syros",
+    },
+    {
+      icon: <Clock size={18} />,
+      label: "09:00 – 22:00",
+    },
+    {
+      icon: <Phone size={18} />,
+      label: "+30 22810 45686",
+      href: "tel:+302281045686",
+    },
+    {
+      icon: <Mail size={18} />,
+      label: "galissea.bar@gmail.com",
+      href: "mailto:galissea.bar@gmail.com",
+    },
+  ];
+
   return (
-    <section id="contact" className="px-6 py-12 md:py-16 bg-card/50">
-      <div className="max-w-md mx-auto text-center">
-        <h2 className="font-display text-2xl font-semibold text-primary mb-6">
-          {t("Επικοινωνία", "Contact")}
-        </h2>
-
-        <div className="space-y-4 text-sm font-body">
-          <div className="flex items-center justify-center gap-2 text-foreground">
-            <MapPin size={16} className="text-accent flex-shrink-0" />
-            <span>Galissas, Syros, Greece</span>
-          </div>
-
-          <div className="flex items-center justify-center gap-2 text-foreground">
-            <Clock size={16} className="text-accent flex-shrink-0" />
-            <span>09:00 – 22:00</span>
-          </div>
-
-          <a
-            href="tel:+302281045686"
-            className="flex items-center justify-center gap-2 text-foreground hover:text-primary transition-colors"
-          >
-            <Phone size={16} className="text-accent flex-shrink-0" />
-            <span>+30 22810 45686</span>
-          </a>
-
-          <a
-            href="mailto:galissea.bar@gmail.com"
-            className="flex items-center justify-center gap-2 text-foreground hover:text-primary transition-colors"
-          >
-            <Mail size={16} className="text-accent flex-shrink-0" />
-            <span>galissea.bar@gmail.com</span>
-          </a>
+    <section id="contact" className="py-12 px-6">
+      <motion.div
+        className="max-w-md mx-auto"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="text-center mb-6">
+          <h2 className="font-display text-2xl font-bold text-primary mb-1">
+            {t("Επικοινωνία", "Contact")}
+          </h2>
+          <div className="w-12 h-0.5 bg-accent/60 mx-auto rounded-full" />
         </div>
 
-        {/* Social links */}
-        <div className="flex items-center justify-center gap-4 mt-8">
+        <div className="space-y-3">
+          {items.map((item, i) => {
+            const inner = (
+              <div className="flex items-center gap-3 bg-card/60 rounded-xl px-4 py-3.5 transition-colors hover:bg-card">
+                <span className="text-accent">{item.icon}</span>
+                <span className="font-body text-sm text-foreground">
+                  {item.label}
+                </span>
+              </div>
+            );
+            return item.href ? (
+              <a key={i} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
+                {inner}
+              </a>
+            ) : (
+              <div key={i}>{inner}</div>
+            );
+          })}
+        </div>
+
+        {/* Social */}
+        <div className="flex justify-center gap-4 mt-6">
           <a
             href="https://www.instagram.com/galissea_bar/"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
+            className="p-3 bg-card/60 rounded-full text-accent hover:text-primary hover:bg-card transition-colors"
+            aria-label="Instagram"
           >
-            <Instagram size={16} />
-            Instagram
+            <Instagram size={20} />
           </a>
           <a
             href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-5 py-2.5 bg-muted text-foreground rounded-full text-sm font-medium hover:bg-muted/80 transition-colors"
+            className="p-3 bg-card/60 rounded-full text-accent hover:text-primary hover:bg-card transition-colors"
+            aria-label="Facebook"
           >
-            <Facebook size={16} />
-            Facebook
+            <Facebook size={20} />
           </a>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
