@@ -1,120 +1,120 @@
-import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { X } from "lucide-react";
 import { useLang } from "@/context/LangContext";
 import { menuData } from "@/data/menu";
-import { X } from "lucide-react";
+
+const MENU_SCROLL_OFFSET = 120;
 
 const MenuSection = () => {
   const { lang, t } = useLang();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
+  const scrollBehavior: ScrollBehavior = reduceMotion ? "auto" : "smooth";
 
-  const activeCat = menuData.find((c) => c.id === activeCategory);
+  const activeCat = menuData.find((category) => category.id === activeCategory);
 
-  // Scroll active chip into view
   useEffect(() => {
-    if (!activeCategory) return;
-    const activeBtn = navRef.current?.querySelector(
+    if (!activeCategory || !navRef.current) return;
+
+    const activeButton = navRef.current.querySelector(
       `[data-cat="${activeCategory}"]`
     ) as HTMLElement | null;
-    if (activeBtn && navRef.current) {
-      const nav = navRef.current;
-      const scrollLeft =
-        activeBtn.offsetLeft - nav.offsetWidth / 2 + activeBtn.offsetWidth / 2;
-      nav.scrollTo({ left: scrollLeft, behavior: "smooth" });
-    }
-  }, [activeCategory]);
 
-  // Scroll to items when category selected
+    if (!activeButton) return;
+
+    const nav = navRef.current;
+    const scrollLeft =
+      activeButton.offsetLeft - nav.offsetWidth / 2 + activeButton.offsetWidth / 2;
+
+    nav.scrollTo({ left: scrollLeft, behavior: scrollBehavior });
+  }, [activeCategory, scrollBehavior]);
+
   useEffect(() => {
-    if (activeCategory && itemsRef.current) {
-      const y =
-        itemsRef.current.getBoundingClientRect().top + window.scrollY - 120;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-  }, [activeCategory]);
+    if (!activeCategory || !itemsRef.current) return;
+
+    const y = itemsRef.current.getBoundingClientRect().top + window.scrollY - MENU_SCROLL_OFFSET;
+    window.scrollTo({ top: y, behavior: scrollBehavior });
+  }, [activeCategory, scrollBehavior]);
 
   return (
     <section id="menu" className="pb-8">
-      {/* Section header */}
-      <div className="text-center px-4 pt-10 pb-6">
+      <div className="px-4 pb-6 pt-10 text-center">
         <motion.h2
-          className="font-display text-2xl font-bold text-primary mb-1"
+          className="mb-1 font-display text-2xl font-bold text-primary"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          {t("Κατάλογος", "Menu")}
+          {t("\u039a\u03b1\u03c4\u03ac\u03bb\u03bf\u03b3\u03bf\u03c2", "Menu")}
         </motion.h2>
-        <div className="w-12 h-0.5 bg-accent/60 mx-auto rounded-full" />
+        <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
       </div>
 
-      {/* Category cards grid */}
-      <div className="px-4 grid grid-cols-2 gap-3 mb-2">
-        {menuData.map((cat, i) => (
+      <div className="mb-2 grid grid-cols-2 gap-3 px-4">
+        {menuData.map((category, index) => (
           <motion.button
-            key={cat.id}
+            type="button"
+            key={category.id}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-30px" }}
-            transition={{ delay: i * 0.04, duration: 0.4 }}
+            transition={{ delay: index * 0.04, duration: 0.4 }}
             whileTap={{ scale: 0.97 }}
             onClick={() =>
-              setActiveCategory(activeCategory === cat.id ? null : cat.id)
+              setActiveCategory(activeCategory === category.id ? null : category.id)
             }
-            className={`relative overflow-hidden rounded-2xl aspect-[4/3] group transition-all duration-300 ${
-              activeCategory === cat.id
+            className={`group relative aspect-[4/3] overflow-hidden rounded-2xl transition-all duration-300 touch-manipulation ${
+              activeCategory === category.id
                 ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg"
                 : "shadow-sm"
             }`}
           >
             <img
-              src={cat.image}
-              alt={lang === "el" ? cat.nameEl : cat.nameEn}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              src={category.image}
+              alt={lang === "el" ? category.nameEl : category.nameEn}
+              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               loading="lazy"
               width={640}
               height={512}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-3">
-              <span className="font-display text-sm font-semibold text-white drop-shadow-md leading-tight">
-                {lang === "el" ? cat.nameEl : cat.nameEn}
+            <div className="absolute bottom-0 left-0 right-0 p-3 text-left">
+              <span className="block font-display text-sm font-semibold leading-tight text-white drop-shadow-md">
+                {lang === "el" ? category.nameEl : category.nameEn}
               </span>
-              <span className="block font-body text-[10px] text-white/70 mt-0.5">
-                {cat.items.length} {t("προϊόντα", "items")}
+              <span className="mt-0.5 block font-body text-[10px] text-white/70">
+                {category.items.length} {t("\u03c0\u03c1\u03bf\u03ca\u03cc\u03bd\u03c4\u03b1", "items")}
               </span>
             </div>
           </motion.button>
         ))}
       </div>
 
-      {/* Sticky category chips (visible when a category is open) */}
       <AnimatePresence>
         {activeCategory && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="sticky top-14 z-40 bg-background/95 backdrop-blur-md border-b border-border/30 shadow-sm"
+            className="sticky top-[calc(env(safe-area-inset-top)+3.5rem)] z-40 border-b border-border/30 bg-background/95 shadow-sm backdrop-blur-md"
           >
-            <div
-              ref={navRef}
-              className="flex gap-1.5 overflow-x-auto hide-scrollbar px-4 py-2.5"
-            >
-              {menuData.map((cat) => (
+            <div ref={navRef} className="hide-scrollbar flex gap-1.5 overflow-x-auto px-4 py-2.5">
+              {menuData.map((category) => (
                 <button
-                  key={cat.id}
-                  data-cat={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-body font-medium transition-all whitespace-nowrap ${
-                    activeCategory === cat.id
+                  type="button"
+                  key={category.id}
+                  data-cat={category.id}
+                  onClick={() => setActiveCategory(category.id)}
+                  className={`whitespace-nowrap rounded-full px-3.5 py-2 text-xs font-body font-medium transition-all ${
+                    activeCategory === category.id
                       ? "bg-primary text-primary-foreground shadow-sm"
                       : "bg-muted text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {lang === "el" ? cat.nameEl : cat.nameEn}
+                  {lang === "el" ? category.nameEl : category.nameEn}
                 </button>
               ))}
             </div>
@@ -122,8 +122,7 @@ const MenuSection = () => {
         )}
       </AnimatePresence>
 
-      {/* Active category items */}
-      <div ref={itemsRef} className="px-4 pt-2 min-h-[200px]">
+      <div ref={itemsRef} className="min-h-[200px] px-4 pt-2">
         <AnimatePresence mode="wait">
           {activeCat ? (
             <motion.div
@@ -133,13 +132,12 @@ const MenuSection = () => {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25 }}
             >
-              {/* Category header */}
-              <div className="flex items-center justify-between mb-3 pt-2">
+              <div className="mb-3 flex items-center justify-between pt-2">
                 <div className="flex items-center gap-3">
                   <img
                     src={activeCat.image}
                     alt=""
-                    className="w-10 h-10 rounded-xl object-cover"
+                    className="h-10 w-10 rounded-xl object-cover"
                     loading="lazy"
                   />
                   <h3 className="font-display text-lg font-bold text-primary">
@@ -147,38 +145,39 @@ const MenuSection = () => {
                   </h3>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setActiveCategory(null)}
-                  className="p-2 rounded-full bg-muted text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label="Close"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:text-foreground"
+                  aria-label={t("\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf", "Close")}
                 >
                   <X size={16} />
                 </button>
               </div>
 
-              {/* Items */}
-              <div className="bg-card/50 rounded-2xl overflow-hidden divide-y divide-border/30">
-                {activeCat.items.map((item, idx) => {
+              <div className="overflow-hidden rounded-2xl bg-card/50 divide-y divide-border/30">
+                {activeCat.items.map((item, index) => {
                   const name = lang === "el" ? item.nameEl : item.nameEn;
-                  const desc = lang === "el" ? item.descEl : item.descEn;
+                  const description = lang === "el" ? item.descEl : item.descEn;
+
                   return (
                     <motion.div
-                      key={idx}
+                      key={index}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: idx * 0.03 }}
-                      className="flex items-start justify-between py-3.5 px-4"
+                      transition={{ delay: index * 0.03 }}
+                      className="flex items-start justify-between px-4 py-3.5"
                     >
-                      <div className="flex-1 min-w-0 pr-4">
-                        <span className="font-body text-[15px] font-medium text-foreground leading-tight block">
+                      <div className="min-w-0 flex-1 pr-4">
+                        <span className="block font-body text-[15px] font-medium leading-tight text-foreground">
                           {name}
                         </span>
-                        {desc && (
-                          <p className="font-body text-[11px] text-muted-foreground mt-0.5 leading-snug">
-                            {desc}
+                        {description && (
+                          <p className="mt-0.5 font-body text-[11px] leading-snug text-muted-foreground">
+                            {description}
                           </p>
                         )}
                       </div>
-                      <span className="font-body text-sm font-bold text-primary whitespace-nowrap pt-0.5 tabular-nums">
+                      <span className="whitespace-nowrap pt-0.5 font-body text-sm font-bold tabular-nums text-primary">
                         {item.price}€
                       </span>
                     </motion.div>
@@ -191,10 +190,10 @@ const MenuSection = () => {
               key="placeholder"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center text-muted-foreground font-body text-sm py-8"
+              className="py-8 text-center font-body text-sm text-muted-foreground"
             >
               {t(
-                "Επιλέξτε μια κατηγορία παραπάνω",
+                "\u0395\u03c0\u03b9\u03bb\u03ad\u03be\u03c4\u03b5 \u03bc\u03b9\u03b1 \u03ba\u03b1\u03c4\u03b7\u03b3\u03bf\u03c1\u03af\u03b1 \u03c0\u03b1\u03c1\u03b1\u03c0\u03ac\u03bd\u03c9",
                 "Tap a category above to explore"
               )}
             </motion.p>

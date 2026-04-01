@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ChevronDown, MapPin, Clock } from "lucide-react";
+import { ChevronDown, Clock, MapPin } from "lucide-react";
 import { useLang } from "@/context/LangContext";
 import logo from "@/assets/logo.png";
 
@@ -9,18 +9,16 @@ const Hero = () => {
   return (
     <section
       id="top"
-      className="relative min-h-[80vh] flex flex-col items-center justify-center px-6 pt-20 pb-12 overflow-hidden"
+      className="relative flex min-h-[80vh] flex-col items-center justify-center overflow-hidden px-6 pb-12 pt-[calc(env(safe-area-inset-top)+5rem)]"
     >
-      {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-secondary/30 via-background to-background" />
-      <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-br from-primary/8 via-accent/5 to-transparent" />
+      <div className="absolute left-0 right-0 top-0 h-64 bg-gradient-to-br from-primary/8 via-accent/5 to-transparent" />
 
-      <div className="relative z-10 flex flex-col items-center text-center max-w-sm mx-auto">
-        {/* Logo */}
+      <div className="relative z-10 mx-auto flex max-w-sm flex-col items-center text-center">
         <motion.img
           src={logo}
           alt="Galissea"
-          className="w-32 h-32 mb-5 drop-shadow-lg"
+          className="mb-5 h-32 w-32 drop-shadow-lg"
           width={512}
           height={512}
           initial={{ opacity: 0, scale: 0.7, rotate: -5 }}
@@ -28,9 +26,8 @@ const Hero = () => {
           transition={{ duration: 0.7, ease: "easeOut" }}
         />
 
-        {/* Name */}
         <motion.h1
-          className="font-display text-[2.5rem] font-bold text-primary leading-none mb-2"
+          className="mb-2 font-display text-[2.25rem] font-bold leading-none text-primary sm:text-[2.5rem]"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
@@ -38,9 +35,8 @@ const Hero = () => {
           Galissea
         </motion.h1>
 
-        {/* Slogan */}
         <motion.p
-          className="font-body text-xs tracking-[0.35em] uppercase text-accent font-medium mb-6"
+          className="mb-6 font-body text-xs font-medium uppercase tracking-[0.35em] text-accent"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
@@ -48,33 +44,34 @@ const Hero = () => {
           Cafe · Snack · Bar
         </motion.p>
 
-        {/* Info pills */}
         <motion.div
-          className="flex flex-wrap justify-center gap-3 mb-8"
+          className="mb-8 flex flex-wrap justify-center gap-3"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <span className="inline-flex items-center gap-1.5 bg-card/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-body text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5 font-body text-xs text-muted-foreground backdrop-blur-sm">
             <MapPin size={12} className="text-accent" />
             Galissas, Syros
           </span>
-          <span className="inline-flex items-center gap-1.5 bg-card/80 backdrop-blur-sm px-3 py-1.5 rounded-full text-xs font-body text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5 font-body text-xs text-muted-foreground backdrop-blur-sm">
             <Clock size={12} className="text-accent" />
-            09:00 – 22:00
+            09:00 - 22:00
           </span>
         </motion.div>
 
-        {/* CTA */}
         <motion.a
           href="#menu"
-          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-8 py-3.5 rounded-full font-body font-semibold text-sm shadow-lg hover:shadow-xl transition-all active:scale-[0.97]"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3.5 font-body text-sm font-semibold text-primary-foreground shadow-lg transition-all hover:shadow-xl active:scale-[0.97]"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.65 }}
           whileTap={{ scale: 0.97 }}
         >
-          {t("Δες τον Κατάλογο", "View Menu")}
+          {t(
+            "\u0394\u03b5\u03c2 \u03c4\u03bf\u03bd \u039a\u03b1\u03c4\u03ac\u03bb\u03bf\u03b3\u03bf",
+            "View Menu",
+          )}
           <ChevronDown size={16} />
         </motion.a>
       </div>

@@ -1,19 +1,22 @@
 import { motion } from "framer-motion";
-import { Phone, Mail, MapPin, Clock, Instagram, Facebook } from "lucide-react";
+import { Clock, Instagram, Mail, MapPin, Phone } from "lucide-react";
 import { useLang } from "@/context/LangContext";
+import { resolveMapsConfig } from "@/config/maps";
 
 const Contact = () => {
   const { t } = useLang();
+  const { openUrl } = resolveMapsConfig();
 
   const items = [
     {
       icon: <MapPin size={18} />,
-      label: "Galissas, Syros",
-      href: "https://maps.google.com/?q=Galissas+Syros",
+      label: t("\u0393\u03b1\u03bb\u03b7\u03c3\u03c3\u03ac\u03c2, \u03a3\u03cd\u03c1\u03bf\u03c2", "Galissas, Syros"),
+      href: openUrl,
+      external: true,
     },
     {
       icon: <Clock size={18} />,
-      label: "09:00 – 22:00",
+      label: t("\u039a\u03b1\u03b8\u03b7\u03bc\u03b5\u03c1\u03b9\u03bd\u03ac 09:00 - 22:00", "Daily 09:00 - 22:00"),
     },
     {
       icon: <Phone size={18} />,
@@ -27,60 +30,81 @@ const Contact = () => {
     },
   ];
 
+  const quickActions = [
+    {
+      href: "https://www.instagram.com/galissea_bar/",
+      icon: <Instagram size={20} />,
+      label: "Instagram",
+      external: true,
+    },
+    {
+      href: "tel:+302281045686",
+      icon: <Phone size={20} />,
+      label: t("\u039a\u03bb\u03ae\u03c3\u03b7", "Call"),
+    },
+    {
+      href: "mailto:galissea.bar@gmail.com",
+      icon: <Mail size={20} />,
+      label: t("\u0395\u03bc\u03b1\u03b9\u03bb", "Email"),
+    },
+  ];
+
   return (
-    <section id="contact" className="py-12 px-6">
+    <section id="contact" className="px-6 py-12">
       <motion.div
-        className="max-w-md mx-auto"
+        className="mx-auto max-w-md"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
       >
-        <div className="text-center mb-6">
-          <h2 className="font-display text-2xl font-bold text-primary mb-1">
-            {t("Επικοινωνία", "Contact")}
+        <div className="mb-6 text-center">
+          <h2 className="mb-1 font-display text-2xl font-bold text-primary">
+            {t("\u0395\u03c0\u03b9\u03ba\u03bf\u03b9\u03bd\u03c9\u03bd\u03af\u03b1", "Contact")}
           </h2>
-          <div className="w-12 h-0.5 bg-accent/60 mx-auto rounded-full" />
+          <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
         </div>
 
         <div className="space-y-3">
-          {items.map((item, i) => {
-            const inner = (
-              <div className="flex items-center gap-3 bg-card/60 rounded-xl px-4 py-3.5 transition-colors hover:bg-card">
+          {items.map((item, index) => {
+            const card = (
+              <div className="flex min-h-12 items-center gap-3 rounded-xl bg-card/60 px-4 py-3.5 transition-colors hover:bg-card">
                 <span className="text-accent">{item.icon}</span>
-                <span className="font-body text-sm text-foreground">
-                  {item.label}
-                </span>
+                <span className="font-body text-sm text-foreground">{item.label}</span>
               </div>
             );
-            return item.href ? (
-              <a key={i} href={item.href} target={item.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
-                {inner}
+
+            if (!item.href) {
+              return <div key={index}>{card}</div>;
+            }
+
+            return (
+              <a
+                key={index}
+                href={item.href}
+                target={item.external ? "_blank" : undefined}
+                rel={item.external ? "noopener noreferrer" : undefined}
+              >
+                {card}
               </a>
-            ) : (
-              <div key={i}>{inner}</div>
             );
           })}
         </div>
 
-        {/* Social */}
-        <div className="flex justify-center gap-4 mt-6">
-          <a
-            href="https://www.instagram.com/galissea_bar/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-3 bg-card/60 rounded-full text-accent hover:text-primary hover:bg-card transition-colors"
-            aria-label="Instagram"
-          >
-            <Instagram size={20} />
-          </a>
-          <a
-            href="#"
-            className="p-3 bg-card/60 rounded-full text-accent hover:text-primary hover:bg-card transition-colors"
-            aria-label="Facebook"
-          >
-            <Facebook size={20} />
-          </a>
+        <div className="mt-6 flex justify-center gap-3">
+          {quickActions.map((action) => (
+            <a
+              key={action.href}
+              href={action.href}
+              target={action.external ? "_blank" : undefined}
+              rel={action.external ? "noopener noreferrer" : undefined}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-card/60 text-accent transition-colors hover:bg-card hover:text-primary"
+              aria-label={action.label}
+              title={action.label}
+            >
+              {action.icon}
+            </a>
+          ))}
         </div>
       </motion.div>
     </section>

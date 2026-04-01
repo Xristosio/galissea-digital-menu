@@ -59,10 +59,16 @@
 
   body {
     @apply bg-background text-foreground font-body antialiased;
+    overflow-x: clip;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
+  }
+
+  a,
+  button {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 }
 
@@ -78,6 +84,11 @@
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+#root {
+  overflow-x: clip;
 }
 
 /* Hide scrollbar on category nav */
@@ -87,4 +98,10 @@ html {
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

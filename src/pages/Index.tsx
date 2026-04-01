@@ -3,8 +3,10 @@ import Hero from "@/components/Hero";
 import MenuSection from "@/components/MenuSection";
 import About from "@/components/About";
 import Gallery from "@/components/Gallery";
+import Location from "@/components/Location";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import BackToTopButton from "@/components/BackToTopButton";
 import { LangProvider } from "@/context/LangContext";
 
 const Index = () => {
@@ -16,8 +18,10 @@ const Index = () => {
         <MenuSection />
         <About />
         <Gallery />
+        <Location />
         <Contact />
         <Footer />
+        <BackToTopButton />
       </div>
     </LangProvider>
   );
