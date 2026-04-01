@@ -119,7 +119,7 @@ const MenuSection = () => {
       </div>
 
       <div className="px-4 pb-3">
-        <div className="mx-auto flex max-w-md justify-end">
+        <div className="mx-auto flex min-w-0 max-w-md justify-end">
           <AnimatePresence initial={false} mode="wait">
             {isSearchOpen ? (
               <motion.div
@@ -128,7 +128,7 @@ const MenuSection = () => {
                 animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
                 exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 6 }}
                 transition={searchTransition}
-                className="flex w-full max-w-xs items-center gap-1.5 rounded-full border border-border/60 bg-card/90 px-2 py-1.5 shadow-sm backdrop-blur-sm"
+                className="flex w-full min-w-0 max-w-xs overflow-hidden items-center gap-1.5 rounded-full border border-border/60 bg-card/90 px-2 py-1.5 shadow-sm backdrop-blur-sm"
               >
                 <Search size={15} className="flex-shrink-0 text-accent" />
                 <label htmlFor="menu-search" className="sr-only">
@@ -140,7 +140,7 @@ const MenuSection = () => {
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
                   placeholder={t("\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7...", "Search...")}
-                  className="h-7 w-full min-w-0 bg-transparent px-1 font-body text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+                  className="h-8 w-full min-w-0 bg-transparent px-1 font-body text-[16px] leading-none text-foreground placeholder:text-muted-foreground focus:outline-none sm:h-7 sm:text-sm"
                   onKeyDown={(event) => {
                     if (event.key !== "Escape") return;
                     if (searchQuery) {
