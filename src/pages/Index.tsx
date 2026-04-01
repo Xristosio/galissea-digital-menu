@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import MenuSection from "@/components/MenuSection";
 import About from "@/components/About";
+import Gallery from "@/components/Gallery";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import { LangProvider } from "@/context/LangContext";
@@ -14,6 +15,7 @@ const Index = () => {
         <Hero />
         <MenuSection />
         <About />
+        <Gallery />
         <Contact />
         <Footer />
       </div>
