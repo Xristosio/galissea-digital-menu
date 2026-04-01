@@ -52,7 +52,7 @@ const Hero = () => {
         >
           <span className="inline-flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5 font-body text-xs text-muted-foreground backdrop-blur-sm">
             <MapPin size={12} className="text-accent" />
-            Galissas, Syros
+            {t("Γαλησσάς, Σύρος", "Galissas, Syros")}
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5 font-body text-xs text-muted-foreground backdrop-blur-sm">
             <Clock size={12} className="text-accent" />
@@ -68,10 +68,7 @@ const Hero = () => {
           transition={{ delay: 0.65 }}
           whileTap={{ scale: 0.97 }}
         >
-          {t(
-            "\u0394\u03b5\u03c2 \u03c4\u03bf\u03bd \u039a\u03b1\u03c4\u03ac\u03bb\u03bf\u03b3\u03bf",
-            "View Menu",
-          )}
+          {t("Δες τον Κατάλογο", "View Menu")}
           <ChevronDown size={16} />
         </motion.a>
       </div>

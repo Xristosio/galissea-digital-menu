@@ -12,7 +12,7 @@ const Contact = () => {
     {
       icon: <MapPin size={18} />,
       label: t(
-        "\u0393\u03b1\u03bb\u03b7\u03c3\u03c3\u03ac\u03c2, \u03a3\u03cd\u03c1\u03bf\u03c2",
+        "Γαλησσάς, Σύρος",
         "Galissas, Syros",
       ),
       href: openUrl,
@@ -21,7 +21,7 @@ const Contact = () => {
     {
       icon: <Clock size={18} />,
       label: t(
-        "\u039a\u03b1\u03b8\u03b7\u03bc\u03b5\u03c1\u03b9\u03bd\u03ac 09:00 - 22:00",
+        "Καθημερινά 09:00 - 22:00",
         "Daily 09:00 - 22:00",
       ),
     },
@@ -61,10 +61,7 @@ const Contact = () => {
       >
         <div className="mb-6 text-center">
           <h2 className="mb-1 font-display text-2xl font-bold text-primary">
-            {t(
-              "\u0395\u03c0\u03b9\u03ba\u03bf\u03b9\u03bd\u03c9\u03bd\u03af\u03b1",
-              "Contact",
-            )}
+            {t("Επικοινωνία", "Contact")}
           </h2>
           <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
         </div>
@@ -99,15 +96,12 @@ const Contact = () => {
 
         <div className="mt-6 rounded-2xl border border-border/40 bg-card/45 p-4">
           <h3 className="font-display text-lg font-semibold text-primary">
-            {t(
-              "\u039a\u03bf\u03b9\u03bd\u03c9\u03bd\u03b9\u03ba\u03ac \u0394\u03af\u03ba\u03c4\u03c5\u03b1",
-              "Social Media",
-            )}
+            {t("Κοινωνικά Δίκτυα", "Social Media")}
           </h3>
           <p className="mt-1 font-body text-xs leading-relaxed text-muted-foreground">
             {t(
-              "\u0391\u03ba\u03bf\u03bb\u03bf\u03c5\u03b8\u03ae\u03c3\u03c4\u03b5 \u03bc\u03b1\u03c2 \u03b3\u03b9\u03b1 \u03c3\u03c4\u03b9\u03b3\u03bc\u03ad\u03c2 \u03b1\u03c0\u03cc \u03c4\u03b7\u03bd \u03c0\u03b1\u03c1\u03b1\u03bb\u03af\u03b1 \u03c4\u03b7\u03c2 \u0393\u03b1\u03bb\u03b7\u03c3\u03c3\u03ac.",
-              "Follow us on.",
+              "Ακολουθήστε μας για στιγμές από την παραλία της Γαλησσάς.",
+              "Follow us for moments from the beach at Galissas.",
             )}
           </p>
 

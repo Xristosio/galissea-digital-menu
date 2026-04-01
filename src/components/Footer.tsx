@@ -1,5 +1,4 @@
 import { useLang } from "@/context/LangContext";
-import logo from "@/assets/logo.png";
 
 const Footer = () => {
   const { t } = useLang();
@@ -16,7 +15,7 @@ const Footer = () => {
       </div>
       <p className="mt-4 font-body text-[11px] text-muted-foreground/70">
         {t(
-          `\u00a9 ${new Date().getFullYear()} Galissea - \u0393\u03b1\u03bb\u03b7\u03c3\u03c3\u03ac\u03c2, \u03a3\u03cd\u03c1\u03bf\u03c2`,
+          `© ${new Date().getFullYear()} Galissea - Γαλησσάς, Σύρος`,
           `© ${new Date().getFullYear()} Galissea - Galissas, Syros`,
         )}
       </p>

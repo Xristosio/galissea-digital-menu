@@ -113,13 +113,13 @@ const MenuSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          {t("\u039a\u03b1\u03c4\u03ac\u03bb\u03bf\u03b3\u03bf\u03c2", "Menu")}
+          {t("Κατάλογος", "Menu")}
         </motion.h2>
         <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
       </div>
 
       <div className="px-4 pb-3">
-        <div className="mx-auto flex min-w-0 max-w-md justify-end">
+        <div className="mx-auto flex w-full min-w-0 max-w-md justify-center">
           <AnimatePresence initial={false} mode="wait">
             {isSearchOpen ? (
               <motion.div
@@ -132,14 +132,14 @@ const MenuSection = () => {
               >
                 <Search size={15} className="flex-shrink-0 text-accent" />
                 <label htmlFor="menu-search" className="sr-only">
-                  {t("\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03ba\u03b1\u03c4\u03b1\u03bb\u03cc\u03b3\u03bf\u03c5", "Search menu")}
+                  {t("Αναζήτηση καταλόγου", "Search menu")}
                 </label>
                 <input
                   id="menu-search"
                   ref={searchInputRef}
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
-                  placeholder={t("\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7...", "Search...")}
+                  placeholder={t("Αναζήτηση...", "Search...")}
                   className="h-8 w-full min-w-0 bg-transparent px-1 font-body text-[16px] leading-none text-foreground placeholder:text-muted-foreground focus:outline-none sm:h-7 sm:text-sm"
                   onKeyDown={(event) => {
                     if (event.key !== "Escape") return;
@@ -149,14 +149,14 @@ const MenuSection = () => {
                       closeSearch();
                     }
                   }}
-                  aria-label={t("\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7 \u03ba\u03b1\u03c4\u03b1\u03bb\u03cc\u03b3\u03bf\u03c5", "Search menu")}
+                  aria-label={t("Αναζήτηση καταλόγου", "Search menu")}
                 />
                 {searchQuery && (
                   <button
                     type="button"
                     onClick={() => setSearchQuery("")}
                     className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    aria-label={t("\u039a\u03b1\u03b8\u03b1\u03c1\u03b9\u03c3\u03bc\u03cc\u03c2 \u03b1\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7\u03c2", "Clear search")}
+                    aria-label={t("Καθαρισμός αναζήτησης", "Clear search")}
                   >
                     <X size={14} />
                   </button>
@@ -165,7 +165,7 @@ const MenuSection = () => {
                   type="button"
                   onClick={closeSearch}
                   className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  aria-label={t("\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf \u03b1\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7\u03c2", "Close search")}
+                  aria-label={t("Κλείσιμο αναζήτησης", "Close search")}
                 >
                   <X size={14} />
                 </button>
@@ -180,8 +180,8 @@ const MenuSection = () => {
                 exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94 }}
                 transition={searchTransition}
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-card/70 text-accent shadow-sm transition-colors hover:bg-card hover:text-primary"
-                aria-label={t("\u0386\u03bd\u03bf\u03b9\u03b3\u03bc\u03b1 \u03b1\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7\u03c2", "Open menu search")}
-                title={t("\u0391\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7", "Search")}
+                aria-label={t("Άνοιγμα αναζήτησης", "Open menu search")}
+                title={t("Αναζήτηση", "Search")}
               >
                 <Search size={17} />
               </motion.button>
@@ -190,8 +190,8 @@ const MenuSection = () => {
         </div>
 
         {isSearchActive && (
-          <p className="mt-2 text-right font-body text-[11px] text-muted-foreground">
-            {t("\u03a6\u03b9\u03bb\u03c4\u03c1\u03b1\u03c1\u03b9\u03c3\u03bc\u03ad\u03bd\u03b1", "Filtered")}: "{searchQuery.trim()}" - {totalSearchResults} {t("\u03b1\u03c0\u03bf\u03c4\u03b5\u03bb\u03ad\u03c3\u03bc\u03b1\u03c4\u03b1", "results")}
+          <p className="mt-2 text-center font-body text-[11px] text-muted-foreground">
+            {t("Φιλτραρισμένα", "Filtered")}: "{searchQuery.trim()}" - {totalSearchResults} {t("αποτελέσματα", "results")}
           </p>
         )}
       </div>
@@ -230,7 +230,7 @@ const MenuSection = () => {
                   {lang === "el" ? category.nameEl : category.nameEn}
                 </span>
                 <span className="mt-0.5 block font-body text-[10px] text-white/70">
-                  {category.items.length} {t("\u03c0\u03c1\u03bf\u03ca\u03cc\u03bd\u03c4\u03b1", "items")}
+                  {category.items.length} {t("προϊόντα", "items")}
                 </span>
               </div>
             </motion.button>
@@ -297,7 +297,7 @@ const MenuSection = () => {
                         </h3>
                       </div>
                       <span className="whitespace-nowrap font-body text-[11px] text-muted-foreground">
-                        {category.items.length} {t("\u03c0\u03c1\u03bf\u03ca\u03cc\u03bd\u03c4\u03b1", "items")}
+                        {category.items.length} {t("προϊόντα", "items")}
                       </span>
                     </div>
 
@@ -341,10 +341,10 @@ const MenuSection = () => {
                 className="rounded-2xl bg-card/50 px-4 py-8 text-center"
               >
                 <p className="font-body text-sm text-foreground">
-                  {t("\u0394\u03b5\u03bd \u03b2\u03c1\u03ad\u03b8\u03b7\u03ba\u03b1\u03bd \u03b1\u03c0\u03bf\u03c4\u03b5\u03bb\u03ad\u03c3\u03bc\u03b1\u03c4\u03b1", "No matches found")}
+                  {t("Δεν βρέθηκαν αποτελέσματα", "No matches found")}
                 </p>
                 <p className="mt-1 font-body text-xs text-muted-foreground">
-                  {t("\u0394\u03bf\u03ba\u03b9\u03bc\u03ac\u03c3\u03c4\u03b5 \u03ac\u03bb\u03bb\u03bf \u03cc\u03c1\u03bf \u03b1\u03bd\u03b1\u03b6\u03ae\u03c4\u03b7\u03c3\u03b7\u03c2.", "Try a different search term.")}
+                  {t("Δοκιμάστε άλλο όρο αναζήτησης.", "Try a different search term.")}
                 </p>
               </motion.div>
             )
@@ -372,7 +372,7 @@ const MenuSection = () => {
                   type="button"
                   onClick={() => setActiveCategory(null)}
                   className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:text-foreground"
-                  aria-label={t("\u039a\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf", "Close")}
+                  aria-label={t("Κλείσιμο", "Close")}
                 >
                   <X size={16} />
                 </button>
@@ -417,7 +417,7 @@ const MenuSection = () => {
               className="py-8 text-center font-body text-sm text-muted-foreground"
             >
               {t(
-                "\u0395\u03c0\u03b9\u03bb\u03ad\u03be\u03c4\u03b5 \u03bc\u03b9\u03b1 \u03ba\u03b1\u03c4\u03b7\u03b3\u03bf\u03c1\u03af\u03b1 \u03c0\u03b1\u03c1\u03b1\u03c0\u03ac\u03bd\u03c9",
+                "Επιλέξτε μια κατηγορία παραπάνω",
                 "Tap a category above to explore"
               )}
             </motion.p>

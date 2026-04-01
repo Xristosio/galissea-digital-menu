@@ -2,7 +2,6 @@ import { useReducedMotion } from "framer-motion";
 import { Instagram, MapPin, Phone } from "lucide-react";
 import type { MouseEvent } from "react";
 import { useLang } from "@/context/LangContext";
-import logo from "@/assets/logo.png";
 
 const SCROLL_OFFSET = 12;
 
@@ -34,7 +33,6 @@ const Navbar = () => {
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-border/40 bg-background/90 pt-[env(safe-area-inset-top)] backdrop-blur-md">
       <div className="flex h-14 items-center justify-between px-4">
         <a href="#top" className="flex items-center gap-2">
-          {/* <img src={logo} alt="Galissea" className="h-8 w-8" width={512} height={512} /> */}
           <span className="font-display text-lg font-bold tracking-wide text-primary">
             Galissea
           </span>
@@ -45,7 +43,7 @@ const Navbar = () => {
             href="tel:+302281045686"
             className="inline-flex h-8 w-8 items-center justify-center rounded-full text-accent transition-all hover:bg-card/70 hover:text-primary active:scale-95"
             aria-label={t(
-              "\u03a4\u03b7\u03bb\u03ad\u03c6\u03c9\u03bd\u03bf",
+              "Τηλέφωνο",
               "Phone",
             )}
           >
@@ -56,11 +54,11 @@ const Navbar = () => {
             onClick={handleLocationClick}
             className="inline-flex h-8 w-8 items-center justify-center rounded-full text-accent transition-all hover:bg-card/70 hover:text-primary active:scale-95"
             aria-label={t(
-              "\u03a0\u03bf\u03cd \u03b8\u03b1 \u03bc\u03b1\u03c2 \u03b2\u03c1\u03b5\u03af\u03c4\u03b5",
+              "Πού θα μας βρείτε",
               "Find us",
             )}
             title={t(
-              "\u03a0\u03bf\u03cd \u03b8\u03b1 \u03bc\u03b1\u03c2 \u03b2\u03c1\u03b5\u03af\u03c4\u03b5",
+              "Πού θα μας βρείτε",
               "Find us",
             )}
           >
@@ -81,7 +79,7 @@ const Navbar = () => {
               type="button"
               onClick={() => setLang("el")}
               aria-label={t(
-                "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac",
+                "Ελληνικά",
                 "Greek",
               )}
               aria-pressed={lang === "el"}
@@ -97,7 +95,7 @@ const Navbar = () => {
               type="button"
               onClick={() => setLang("en")}
               aria-label={t(
-                "\u0391\u03b3\u03b3\u03bb\u03b9\u03ba\u03ac",
+                "Αγγλικά",
                 "English",
               )}
               aria-pressed={lang === "en"}

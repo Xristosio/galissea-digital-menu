@@ -33,8 +33,8 @@ const BackToTopButton = () => {
         <motion.button
           type="button"
           onClick={handleBackToTop}
-          aria-label={t("\u0395\u03c0\u03b9\u03c3\u03c4\u03c1\u03bf\u03c6\u03ae \u03c3\u03c4\u03b7\u03bd \u03ba\u03bf\u03c1\u03c5\u03c6\u03ae", "Back to top")}
-          title={t("\u0395\u03c0\u03b9\u03c3\u03c4\u03c1\u03bf\u03c6\u03ae \u03c3\u03c4\u03b7\u03bd \u03ba\u03bf\u03c1\u03c5\u03c6\u03ae", "Back to top")}
+          aria-label={t("Επιστροφή στην κορυφή", "Back to top")}
+          title={t("Επιστροφή στην κορυφή", "Back to top")}
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.96 }}
           animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
           exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.96 }}
