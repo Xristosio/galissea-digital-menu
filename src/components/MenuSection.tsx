@@ -1,8 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { useLang } from "@/context/LangContext";
-import { menuData } from "@/data/menu";
+import {
+  getCategoryItemsCount,
+  getCategorySegments,
+  menuData,
+  type MenuCategory,
+  type MenuItem,
+  type MenuSegment,
+} from "@/data/menu";
 
 const MENU_SCROLL_OFFSET = 120;
 
@@ -12,6 +20,35 @@ const normalizeSearchValue = (value: string) =>
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .trim();
+
+interface SearchCategoryResult {
+  id: string;
+  nameEl: string;
+  nameEn: string;
+  image: string;
+  hasStructuredSegments: boolean;
+  segments: MenuSegment[];
+  itemCount: number;
+}
+
+const getCategorySearchTerms = (category: MenuCategory) =>
+  [category.nameEl, category.nameEn].map(normalizeSearchValue).join(" ");
+
+const getSegmentSearchTerms = (segment: MenuSegment) =>
+  [segment.titleEl, segment.titleEn].map(normalizeSearchValue).join(" ");
+
+const getItemSearchTerms = (item: MenuItem) =>
+  [
+    item.nameEl,
+    item.nameEn,
+    item.descEl ?? "",
+    item.descEn ?? "",
+    item.extraEl ?? "",
+    item.extraEn ?? "",
+    item.price,
+  ]
+    .map(normalizeSearchValue)
+    .join(" ");
 
 const MenuSection = () => {
   const { lang, t } = useLang();
@@ -24,40 +61,64 @@ const MenuSection = () => {
   const reduceMotion = useReducedMotion();
   const scrollBehavior: ScrollBehavior = reduceMotion ? "auto" : "smooth";
 
-  const activeCat = menuData.find((category) => category.id === activeCategory);
+  const activeCat = menuData.find((category) => category.id === activeCategory) ?? null;
+  const activeSegments = useMemo(
+    () => (activeCat ? getCategorySegments(activeCat) : []),
+    [activeCat]
+  );
+  const activeHasStructuredSegments = Boolean(activeCat?.segments?.length);
+
   const normalizedQuery = useMemo(() => normalizeSearchValue(searchQuery), [searchQuery]);
   const isSearchActive = normalizedQuery.length > 0;
 
-  const filteredCategories = useMemo(() => {
+  const filteredCategories = useMemo<SearchCategoryResult[]>(() => {
     if (!isSearchActive) return [];
 
     return menuData
       .map((category) => {
-        const categoryTerms = [category.nameEl, category.nameEn]
-          .map(normalizeSearchValue)
-          .join(" ");
+        const categoryTerms = getCategorySearchTerms(category);
         const matchesCategory = categoryTerms.includes(normalizedQuery);
+        const sourceSegments = getCategorySegments(category);
 
-        const matchingItems = category.items.filter((item) => {
-          if (matchesCategory) return true;
+        const matchingSegments = sourceSegments
+          .map((segment) => {
+            const segmentTerms = getSegmentSearchTerms(segment);
+            const matchesSegment = segmentTerms.includes(normalizedQuery);
 
-          const itemTerms = [item.nameEl, item.nameEn, item.descEl ?? "", item.descEn ?? ""]
-            .map(normalizeSearchValue)
-            .join(" ");
+            const matchingItems = segment.items.filter((item) => {
+              if (matchesCategory || matchesSegment) return true;
+              return getItemSearchTerms(item).includes(normalizedQuery);
+            });
 
-          return itemTerms.includes(normalizedQuery);
-        });
+            return {
+              ...segment,
+              items: matchingItems,
+            };
+          })
+          .filter((segment) => segment.items.length > 0);
+
+        if (matchingSegments.length === 0) {
+          return null;
+        }
 
         return {
-          ...category,
-          items: matchingItems,
+          id: category.id,
+          nameEl: category.nameEl,
+          nameEn: category.nameEn,
+          image: category.image,
+          hasStructuredSegments: Boolean(category.segments?.length),
+          segments: matchingSegments,
+          itemCount: matchingSegments.reduce(
+            (total, segment) => total + segment.items.length,
+            0
+          ),
         };
       })
-      .filter((category) => category.items.length > 0);
+      .filter((category): category is SearchCategoryResult => category !== null);
   }, [isSearchActive, normalizedQuery]);
 
   const totalSearchResults = useMemo(
-    () => filteredCategories.reduce((total, category) => total + category.items.length, 0),
+    () => filteredCategories.reduce((total, category) => total + category.itemCount, 0),
     [filteredCategories]
   );
 
@@ -65,9 +126,33 @@ const MenuSection = () => {
     ? { duration: 0.12 }
     : { duration: 0.24, ease: "easeOut" as const };
 
+  const focusSearchInput = () => {
+    const input = searchInputRef.current;
+    if (!input) return;
+
+    input.focus({ preventScroll: true });
+    const caretPos = input.value.length;
+    input.setSelectionRange(caretPos, caretPos);
+  };
+
+  const openSearch = () => {
+    if (isSearchOpen) {
+      focusSearchInput();
+      return;
+    }
+
+    flushSync(() => setIsSearchOpen(true));
+    focusSearchInput();
+
+    window.requestAnimationFrame(() => {
+      focusSearchInput();
+    });
+  };
+
   const closeSearch = () => {
-    setIsSearchOpen(false);
     setSearchQuery("");
+    setIsSearchOpen(false);
+    searchInputRef.current?.blur();
   };
 
   useEffect(() => {
@@ -95,7 +180,13 @@ const MenuSection = () => {
 
   useEffect(() => {
     if (!isSearchOpen) return;
-    searchInputRef.current?.focus();
+    const rafId = window.requestAnimationFrame(() => {
+      focusSearchInput();
+    });
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+    };
   }, [isSearchOpen]);
 
   useEffect(() => {
@@ -103,6 +194,65 @@ const MenuSection = () => {
       setActiveCategory(null);
     }
   }, [activeCategory, isSearchActive]);
+
+  useEffect(() => {
+    if (!isSearchOpen) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+
+      if (searchQuery) {
+        setSearchQuery("");
+      } else {
+        closeSearch();
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isSearchOpen, searchQuery]);
+
+  const renderMenuItem = (
+    item: MenuItem,
+    key: string,
+    delay: number
+  ) => {
+    const name = lang === "el" ? item.nameEl : item.nameEn;
+    const description = lang === "el" ? item.descEl : item.descEn;
+    const extra = lang === "el" ? item.extraEl : item.extraEn;
+
+    return (
+      <motion.div
+        key={key}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay }}
+        className="flex items-start justify-between px-4 py-3.5"
+      >
+        <div className="min-w-0 flex-1 pr-4">
+          <span className="block font-body text-[15px] font-medium leading-tight text-foreground">
+            {name}
+          </span>
+          {description && (
+            <p className="mt-0.5 font-body text-[11px] leading-snug text-muted-foreground">
+              {description}
+            </p>
+          )}
+          {extra && (
+            <p className="mt-1 font-body text-[10px] leading-snug text-accent/95">
+              {extra}
+            </p>
+          )}
+        </div>
+        <span className="whitespace-nowrap pt-0.5 font-body text-sm font-bold tabular-nums text-primary">
+          {item.price}&euro;
+        </span>
+      </motion.div>
+    );
+  };
 
   return (
     <section id="menu" className="pb-8">
@@ -120,7 +270,7 @@ const MenuSection = () => {
 
       <div className="px-4 pb-3">
         <div className="mx-auto flex w-full min-w-0 max-w-md justify-center">
-          <AnimatePresence initial={false} mode="wait">
+          <AnimatePresence initial={false}>
             {isSearchOpen ? (
               <motion.div
                 key="search-open"
@@ -128,7 +278,15 @@ const MenuSection = () => {
                 animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
                 exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 6 }}
                 transition={searchTransition}
-                className="flex w-full min-w-0 max-w-xs overflow-hidden items-center gap-1.5 rounded-full border border-border/60 bg-card/90 px-2 py-1.5 shadow-sm backdrop-blur-sm"
+                onKeyDown={(event) => {
+                  if (event.key !== "Escape") return;
+                  if (searchQuery) {
+                    setSearchQuery("");
+                  } else {
+                    closeSearch();
+                  }
+                }}
+                className="flex w-full min-w-0 max-w-xs items-center gap-1.5 overflow-hidden rounded-full border border-border/60 bg-card/90 px-2 py-1.5 shadow-sm backdrop-blur-sm"
               >
                 <Search size={15} className="flex-shrink-0 text-accent" />
                 <label htmlFor="menu-search" className="sr-only">
@@ -141,14 +299,6 @@ const MenuSection = () => {
                   onChange={(event) => setSearchQuery(event.target.value)}
                   placeholder={t("Αναζήτηση...", "Search...")}
                   className="h-8 w-full min-w-0 bg-transparent px-1 font-body text-[16px] leading-none text-foreground placeholder:text-muted-foreground focus:outline-none sm:h-7 sm:text-sm"
-                  onKeyDown={(event) => {
-                    if (event.key !== "Escape") return;
-                    if (searchQuery) {
-                      setSearchQuery("");
-                    } else {
-                      closeSearch();
-                    }
-                  }}
                   aria-label={t("Αναζήτηση καταλόγου", "Search menu")}
                 />
                 {searchQuery && (
@@ -174,7 +324,7 @@ const MenuSection = () => {
               <motion.button
                 key="search-trigger"
                 type="button"
-                onClick={() => setIsSearchOpen(true)}
+                onClick={openSearch}
                 initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94 }}
                 animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
                 exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94 }}
@@ -191,7 +341,8 @@ const MenuSection = () => {
 
         {isSearchActive && (
           <p className="mt-2 text-center font-body text-[11px] text-muted-foreground">
-            {t("Φιλτραρισμένα", "Filtered")}: "{searchQuery.trim()}" - {totalSearchResults} {t("αποτελέσματα", "results")}
+            {t("Φιλτραρισμένα", "Filtered")}: "{searchQuery.trim()}" - {totalSearchResults}{" "}
+            {t("αποτελέσματα", "results")}
           </p>
         )}
       </div>
@@ -230,7 +381,7 @@ const MenuSection = () => {
                   {lang === "el" ? category.nameEl : category.nameEn}
                 </span>
                 <span className="mt-0.5 block font-body text-[10px] text-white/70">
-                  {category.items.length} {t("προϊόντα", "items")}
+                  {getCategoryItemsCount(category)} {t("προϊόντα", "items")}
                 </span>
               </div>
             </motion.button>
@@ -297,38 +448,29 @@ const MenuSection = () => {
                         </h3>
                       </div>
                       <span className="whitespace-nowrap font-body text-[11px] text-muted-foreground">
-                        {category.items.length} {t("προϊόντα", "items")}
+                        {category.itemCount} {t("προϊόντα", "items")}
                       </span>
                     </div>
 
-                    {category.items.map((item, index) => {
-                      const name = lang === "el" ? item.nameEl : item.nameEn;
-                      const description = lang === "el" ? item.descEl : item.descEn;
-
-                      return (
-                        <motion.div
-                          key={`${category.id}-${index}-${item.price}`}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: Math.min(index * 0.02, 0.2) }}
-                          className="flex items-start justify-between px-4 py-3.5"
-                        >
-                          <div className="min-w-0 flex-1 pr-4">
-                            <span className="block font-body text-[15px] font-medium leading-tight text-foreground">
-                              {name}
-                            </span>
-                            {description && (
-                              <p className="mt-0.5 font-body text-[11px] leading-snug text-muted-foreground">
-                                {description}
-                              </p>
-                            )}
+                    {category.segments.map((segment, segmentIndex) => (
+                      <Fragment key={`search-segment-${category.id}-${segment.id}`}>
+                        {category.hasStructuredSegments && (
+                          <div className="bg-muted/25 px-4 py-2">
+                            <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                              {lang === "el" ? segment.titleEl : segment.titleEn}
+                            </h4>
                           </div>
-                          <span className="whitespace-nowrap pt-0.5 font-body text-sm font-bold tabular-nums text-primary">
-                            {item.price}&euro;
-                          </span>
-                        </motion.div>
-                      );
-                    })}
+                        )}
+
+                        {segment.items.map((item, index) =>
+                          renderMenuItem(
+                            item,
+                            `${category.id}-${segment.id}-${index}-${item.price}`,
+                            Math.min(segmentIndex * 0.05 + index * 0.02, 0.22)
+                          )
+                        )}
+                      </Fragment>
+                    ))}
                   </div>
                 ))}
               </motion.div>
@@ -379,34 +521,25 @@ const MenuSection = () => {
               </div>
 
               <div className="overflow-hidden rounded-2xl bg-card/50 divide-y divide-border/30">
-                {activeCat.items.map((item, index) => {
-                  const name = lang === "el" ? item.nameEl : item.nameEn;
-                  const description = lang === "el" ? item.descEl : item.descEn;
-
-                  return (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: index * 0.03 }}
-                      className="flex items-start justify-between px-4 py-3.5"
-                    >
-                      <div className="min-w-0 flex-1 pr-4">
-                        <span className="block font-body text-[15px] font-medium leading-tight text-foreground">
-                          {name}
-                        </span>
-                        {description && (
-                          <p className="mt-0.5 font-body text-[11px] leading-snug text-muted-foreground">
-                            {description}
-                          </p>
-                        )}
+                {activeSegments.map((segment, segmentIndex) => (
+                  <Fragment key={`active-segment-${segment.id}`}>
+                    {activeHasStructuredSegments && (
+                      <div className="bg-muted/25 px-4 py-2.5">
+                        <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                          {lang === "el" ? segment.titleEl : segment.titleEn}
+                        </h4>
                       </div>
-                      <span className="whitespace-nowrap pt-0.5 font-body text-sm font-bold tabular-nums text-primary">
-                        {item.price}&euro;
-                      </span>
-                    </motion.div>
-                  );
-                })}
+                    )}
+
+                    {segment.items.map((item, index) =>
+                      renderMenuItem(
+                        item,
+                        `${segment.id}-${index}-${item.price}`,
+                        Math.min(segmentIndex * 0.05 + index * 0.03, 0.24)
+                      )
+                    )}
+                  </Fragment>
+                ))}
               </div>
             </motion.div>
           ) : (
@@ -416,10 +549,7 @@ const MenuSection = () => {
               animate={{ opacity: 1 }}
               className="py-8 text-center font-body text-sm text-muted-foreground"
             >
-              {t(
-                "Επιλέξτε μια κατηγορία παραπάνω",
-                "Tap a category above to explore"
-              )}
+              {t("Επιλέξτε μια κατηγορία παραπάνω", "Tap a category above to explore")}
             </motion.p>
           )}
         </AnimatePresence>
