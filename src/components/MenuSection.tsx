@@ -4,10 +4,12 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { useLang } from "@/context/LangContext";
 import {
+  getCategoryFootnotes,
   getCategoryItemsCount,
   getCategorySegments,
   menuData,
   type MenuCategory,
+  type MenuFootnote,
   type MenuItem,
   type MenuSegment,
 } from "@/data/menu";
@@ -43,6 +45,7 @@ const getItemSearchTerms = (item: MenuItem) =>
     item.nameEn,
     item.descEl ?? "",
     item.descEn ?? "",
+    item.marker ?? "",
     item.extraEl ?? "",
     item.extraEn ?? "",
     item.price,
@@ -64,6 +67,10 @@ const MenuSection = () => {
   const activeCat = menuData.find((category) => category.id === activeCategory) ?? null;
   const activeSegments = useMemo(
     () => (activeCat ? getCategorySegments(activeCat) : []),
+    [activeCat]
+  );
+  const activeFootnotes = useMemo(
+    () => (activeCat ? getCategoryFootnotes(activeCat) : []),
     [activeCat]
   );
   const activeHasStructuredSegments = Boolean(activeCat?.segments?.length);
@@ -221,6 +228,7 @@ const MenuSection = () => {
     delay: number
   ) => {
     const name = lang === "el" ? item.nameEl : item.nameEn;
+    const marker = item.marker ?? "";
     const description = lang === "el" ? item.descEl : item.descEn;
     const extra = lang === "el" ? item.extraEl : item.extraEn;
 
@@ -235,6 +243,11 @@ const MenuSection = () => {
         <div className="min-w-0 flex-1 pr-4">
           <span className="block font-body text-[15px] font-medium leading-tight text-foreground">
             {name}
+            {marker && (
+              <sup className="ml-1 align-super font-body text-[10px] font-semibold text-accent">
+                {marker}
+              </sup>
+            )}
           </span>
           {description && (
             <p className="mt-0.5 font-body text-[11px] leading-snug text-muted-foreground">
@@ -269,74 +282,80 @@ const MenuSection = () => {
       </div>
 
       <div className="px-4 pb-3">
-        <div className="mx-auto flex w-full min-w-0 max-w-md justify-center">
-          <AnimatePresence initial={false}>
-            {isSearchOpen ? (
-              <motion.div
-                key="search-open"
-                initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 6 }}
-                animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
-                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 6 }}
-                transition={searchTransition}
-                onKeyDown={(event) => {
-                  if (event.key !== "Escape") return;
-                  if (searchQuery) {
-                    setSearchQuery("");
-                  } else {
-                    closeSearch();
-                  }
-                }}
-                className="flex w-full min-w-0 max-w-xs items-center gap-1.5 overflow-hidden rounded-full border border-border/60 bg-card/90 px-2 py-1.5 shadow-sm backdrop-blur-sm"
-              >
-                <Search size={15} className="flex-shrink-0 text-accent" />
-                <label htmlFor="menu-search" className="sr-only">
-                  {t("Αναζήτηση καταλόγου", "Search menu")}
-                </label>
-                <input
-                  id="menu-search"
-                  ref={searchInputRef}
-                  value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                  placeholder={t("Αναζήτηση...", "Search...")}
-                  className="h-8 w-full min-w-0 bg-transparent px-1 font-body text-[16px] leading-none text-foreground placeholder:text-muted-foreground focus:outline-none sm:h-7 sm:text-sm"
-                  aria-label={t("Αναζήτηση καταλόγου", "Search menu")}
-                />
-                {searchQuery && (
+        <div className="mx-auto w-full max-w-md">
+          <div className="relative mx-auto h-10 w-full max-w-xs">
+            <AnimatePresence initial={false}>
+              {isSearchOpen ? (
+                <motion.div
+                  key="search-open"
+                  data-search-shell
+                  initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 6 }}
+                  animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+                  exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 6 }}
+                  transition={searchTransition}
+                  onKeyDown={(event) => {
+                    if (event.key !== "Escape") return;
+                    if (searchQuery) {
+                      setSearchQuery("");
+                    } else {
+                      closeSearch();
+                    }
+                  }}
+                  className="absolute inset-0 flex items-center gap-1.5 overflow-hidden rounded-full border border-border/60 bg-card/90 px-2 py-1.5 shadow-sm backdrop-blur-sm"
+                >
+                  <Search size={15} className="flex-shrink-0 text-accent" />
+                  <label htmlFor="menu-search" className="sr-only">
+                    {t("Αναζήτηση καταλόγου", "Search menu")}
+                  </label>
+                  <input
+                    id="menu-search"
+                    ref={searchInputRef}
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder={t("Αναζήτηση...", "Search...")}
+                    className="h-8 w-full min-w-0 bg-transparent px-1 font-body text-[16px] leading-none text-foreground placeholder:text-muted-foreground focus:outline-none sm:h-7 sm:text-sm"
+                    aria-label={t("Αναζήτηση καταλόγου", "Search menu")}
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery("")}
+                      className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      aria-label={t("Καθαρισμός αναζήτησης", "Clear search")}
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
                   <button
                     type="button"
-                    onClick={() => setSearchQuery("")}
+                    onClick={closeSearch}
                     className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                    aria-label={t("Καθαρισμός αναζήτησης", "Clear search")}
+                    aria-label={t("Κλείσιμο αναζήτησης", "Close search")}
                   >
                     <X size={14} />
                   </button>
-                )}
-                <button
-                  type="button"
-                  onClick={closeSearch}
-                  className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  aria-label={t("Κλείσιμο αναζήτησης", "Close search")}
-                >
-                  <X size={14} />
-                </button>
-              </motion.div>
-            ) : (
-              <motion.button
-                key="search-trigger"
-                type="button"
-                onClick={openSearch}
-                initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94 }}
-                animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
-                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94 }}
-                transition={searchTransition}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-card/70 text-accent shadow-sm transition-colors hover:bg-card hover:text-primary"
-                aria-label={t("Άνοιγμα αναζήτησης", "Open menu search")}
-                title={t("Αναζήτηση", "Search")}
-              >
-                <Search size={17} />
-              </motion.button>
-            )}
-          </AnimatePresence>
+                </motion.div>
+              ) : (
+                <div data-search-trigger-wrap className="absolute left-1/2 top-0 -translate-x-1/2">
+                  <motion.button
+                    key="search-trigger"
+                    data-search-trigger
+                    type="button"
+                    onClick={openSearch}
+                    initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94 }}
+                    animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+                    exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94 }}
+                    transition={searchTransition}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-card/70 text-accent shadow-sm transition-colors hover:bg-card hover:text-primary"
+                    aria-label={t("Άνοιγμα αναζήτησης", "Open menu search")}
+                    title={t("Αναζήτηση", "Search")}
+                  >
+                    <Search size={17} />
+                  </motion.button>
+                </div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         {isSearchActive && (
@@ -541,6 +560,35 @@ const MenuSection = () => {
                   </Fragment>
                 ))}
               </div>
+
+              {activeFootnotes.length > 0 && (
+                <div
+                  data-category-footnotes
+                  className="mt-3 rounded-2xl border border-border/40 bg-card/35 px-4 py-3.5"
+                >
+                  <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                    {t("Σημειώσεις", "Notes")}
+                  </h4>
+                  <ul className="mt-2 space-y-1.5">
+                    {activeFootnotes.map((footnote: MenuFootnote, index) => (
+                      <li
+                        data-footnote-item
+                        key={`footnote-${index}-${footnote.marker ?? "text"}`}
+                        className="flex items-start gap-2 font-body text-[11px] leading-relaxed text-muted-foreground"
+                      >
+                        {footnote.marker ? (
+                          <span className="min-w-[1.5rem] pt-[1px] font-semibold text-accent">
+                            {footnote.marker}
+                          </span>
+                        ) : (
+                          <span className="min-w-[1.5rem] pt-[1px] text-accent/70">•</span>
+                        )}
+                        <span>{lang === "el" ? footnote.textEl : footnote.textEn}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </motion.div>
           ) : (
             <motion.p

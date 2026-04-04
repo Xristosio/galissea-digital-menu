@@ -15,6 +15,7 @@ export interface MenuItem {
   descEl?: string;
   descEn?: string;
   price: string;
+  marker?: "*" | "**";
   extraEl?: string;
   extraEn?: string;
 }
@@ -33,6 +34,13 @@ export interface MenuCategory {
   image: string;
   items?: MenuItem[];
   segments?: MenuSegment[];
+  footnotes?: MenuFootnote[];
+}
+
+export interface MenuFootnote {
+  marker?: "*" | "**";
+  textEl: string;
+  textEn: string;
 }
 
 export const getCategorySegments = (category: MenuCategory): MenuSegment[] => {
@@ -56,6 +64,40 @@ export const getCategorySegments = (category: MenuCategory): MenuSegment[] => {
 
 export const getCategoryItemsCount = (category: MenuCategory) =>
   getCategorySegments(category).reduce((total, segment) => total + segment.items.length, 0);
+
+export const sharedMenuFootnotes: MenuFootnote[] = [
+  {
+    marker: "*",
+    textEl: "Σερβίρεται με chips",
+    textEn: "Served with chips",
+  },
+  {
+    marker: "**",
+    textEl: "Σερβίρεται με πατάτες τηγανητές",
+    textEn: "Served with french fries",
+  },
+  {
+    textEl: "Παρακαλούμε ενημερώστε το προσωπικό για τυχόν αλλεργίες ή δυσανεξίες.",
+    textEn: "Please inform the staff, if any allergies or intolerances.",
+  },
+  {
+    textEl:
+      "Ο καταναλωτής δεν υποχρεούται να πληρώσει, εάν δεν λάβει το νόμιμο παραστατικό (απόδειξη-τιμολόγιο).",
+    textEn:
+      "The consumer is not obliged to pay, if the notice of payment is not received (receipt-invoice).",
+  },
+  {
+    textEl:
+      "Στις τιμές περιλαμβάνονται δημοτικοί φόροι και ενδέχεται να υπάρξουν αλλαγές χωρίς προειδοποίηση.",
+    textEn:
+      "Municipal taxes are included in the prices, and changes may occur without prior notice.",
+  },
+];
+
+export const getCategoryFootnotes = (category: MenuCategory): MenuFootnote[] => [
+  ...sharedMenuFootnotes,
+  ...(category.footnotes ?? []),
+];
 
 export const menuData: MenuCategory[] = [
   {
@@ -311,6 +353,7 @@ export const menuData: MenuCategory[] = [
         descEl: "Κοτόπουλο, μπέικον, μαρούλι, ντομάτα, μαγιονέζα",
         descEn: "Chicken, bacon, lettuce, tomato, mayo",
         price: "7.50",
+        marker: "**",
       },
       {
         nameEl: "Club Sandwich Κλασικό",
@@ -318,6 +361,7 @@ export const menuData: MenuCategory[] = [
         descEl: "Ζαμπόν, τυρί, αυγό, μαρούλι",
         descEn: "Ham, cheese, egg, lettuce",
         price: "7.00",
+        marker: "*",
       },
       {
         nameEl: "Wrap Κοτόπουλο",
@@ -325,8 +369,14 @@ export const menuData: MenuCategory[] = [
         descEl: "Κοτόπουλο, λαχανικά, σάλτσα",
         descEn: "Chicken, vegetables, sauce",
         price: "6.50",
+        marker: "**",
       },
-      { nameEl: "Σάντουιτς Τόνου", nameEn: "Tuna Sandwich", price: "6.00" },
+      {
+        nameEl: "Σάντουιτς Τόνου",
+        nameEn: "Tuna Sandwich",
+        price: "6.00",
+        marker: "*",
+      },
     ],
   },
   {
