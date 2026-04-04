@@ -90,7 +90,7 @@ const Contact = () => {
 
         <div className="mt-6 rounded-2xl border border-border/40 bg-card/45 p-4">
           <h3 className="font-display text-lg font-semibold text-primary">
-            {t("Κοινωνικά Δίκτυα", "Social Media")}
+            {t("Βρείτε μας στα social", "Social Media")}
           </h3>
           <p className="mt-1 font-body text-xs leading-relaxed text-muted-foreground">
             {t(

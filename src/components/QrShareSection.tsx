@@ -19,7 +19,7 @@ const QrShareSection = () => {
       >
         <div className="mb-5 text-center">
           <h2 className="mb-1 font-display text-2xl font-bold text-primary">
-            {t("Μοιράσου τον Κατάλογο", "Want to share?")}
+            {t("Θες να το μοιραστείς;", "Want to share?")}
           </h2>
           <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
           <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">

@@ -1,6 +1,11 @@
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useInView,
+  useReducedMotion,
+} from "framer-motion";
 import { Search, X } from "lucide-react";
 import { useLang } from "@/context/LangContext";
 import {
@@ -61,26 +66,36 @@ const MenuSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<HTMLDivElement>(null);
+  const categoryGridRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [hasCategoryCardsEntered, setHasCategoryCardsEntered] = useState(false);
   const reduceMotion = useReducedMotion();
   const scrollBehavior: ScrollBehavior = reduceMotion ? "auto" : "smooth";
+  const categoryGridInView = useInView(categoryGridRef, {
+    once: true,
+    margin: "-64px 0px -16px 0px",
+  });
 
-  const activeCat = menuData.find((category) => category.id === activeCategory) ?? null;
+  const activeCat =
+    menuData.find((category) => category.id === activeCategory) ?? null;
   const activeSegments = useMemo(
     () => (activeCat ? getCategorySegments(activeCat) : []),
-    [activeCat]
+    [activeCat],
   );
   const activeProductFootnotes = useMemo(
     () => (activeCat ? getCategoryProductFootnotes(activeCat) : []),
-    [activeCat]
+    [activeCat],
   );
   const activeGeneralFootnotes = useMemo(
     () => (activeCat ? getCategoryGeneralFootnotes(activeCat) : []),
-    [activeCat]
+    [activeCat],
   );
   const activeHasStructuredSegments = Boolean(activeCat?.segments?.length);
 
-  const normalizedQuery = useMemo(() => normalizeSearchValue(searchQuery), [searchQuery]);
+  const normalizedQuery = useMemo(
+    () => normalizeSearchValue(searchQuery),
+    [searchQuery],
+  );
   const isSearchActive = normalizedQuery.length > 0;
 
   const filteredCategories = useMemo<SearchCategoryResult[]>(() => {
@@ -122,17 +137,25 @@ const MenuSection = () => {
           segments: matchingSegments,
           itemCount: matchingSegments.reduce(
             (total, segment) => total + segment.items.length,
-            0
+            0,
           ),
         };
       })
-      .filter((category): category is SearchCategoryResult => category !== null);
+      .filter(
+        (category): category is SearchCategoryResult => category !== null,
+      );
   }, [isSearchActive, normalizedQuery]);
 
   const totalSearchResults = useMemo(
-    () => filteredCategories.reduce((total, category) => total + category.itemCount, 0),
-    [filteredCategories]
+    () =>
+      filteredCategories.reduce(
+        (total, category) => total + category.itemCount,
+        0,
+      ),
+    [filteredCategories],
   );
+  const shouldRevealCategoryCards =
+    reduceMotion || hasCategoryCardsEntered || categoryGridInView;
 
   const searchTransition = reduceMotion
     ? { duration: 0.12 }
@@ -171,14 +194,16 @@ const MenuSection = () => {
     if (!activeCategory || !navRef.current || isSearchActive) return;
 
     const activeButton = navRef.current.querySelector(
-      `[data-cat="${activeCategory}"]`
+      `[data-cat="${activeCategory}"]`,
     ) as HTMLElement | null;
 
     if (!activeButton) return;
 
     const nav = navRef.current;
     const scrollLeft =
-      activeButton.offsetLeft - nav.offsetWidth / 2 + activeButton.offsetWidth / 2;
+      activeButton.offsetLeft -
+      nav.offsetWidth / 2 +
+      activeButton.offsetWidth / 2;
 
     nav.scrollTo({ left: scrollLeft, behavior: scrollBehavior });
   }, [activeCategory, isSearchActive, scrollBehavior]);
@@ -186,7 +211,10 @@ const MenuSection = () => {
   useEffect(() => {
     if (!activeCategory || !itemsRef.current || isSearchActive) return;
 
-    const y = itemsRef.current.getBoundingClientRect().top + window.scrollY - MENU_SCROLL_OFFSET;
+    const y =
+      itemsRef.current.getBoundingClientRect().top +
+      window.scrollY -
+      MENU_SCROLL_OFFSET;
     window.scrollTo({ top: y, behavior: scrollBehavior });
   }, [activeCategory, isSearchActive, scrollBehavior]);
 
@@ -227,11 +255,12 @@ const MenuSection = () => {
     };
   }, [isSearchOpen, searchQuery]);
 
-  const renderMenuItem = (
-    item: MenuItem,
-    key: string,
-    delay: number
-  ) => {
+  useEffect(() => {
+    if (!categoryGridInView) return;
+    setHasCategoryCardsEntered(true);
+  }, [categoryGridInView]);
+
+  const renderMenuItem = (item: MenuItem, key: string, delay: number) => {
     const name = lang === "el" ? item.nameEl : item.nameEn;
     const marker = item.marker ?? "";
     const description = lang === "el" ? item.descEl : item.descEn;
@@ -281,7 +310,7 @@ const MenuSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
-          {t("Κατάλογος", "Menu")}
+          {t("Μενού", "Menu")}
         </motion.h2>
         <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
       </div>
@@ -294,9 +323,21 @@ const MenuSection = () => {
                 <motion.div
                   key="search-open"
                   data-search-shell
-                  initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 6 }}
-                  animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
-                  exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 6 }}
+                  initial={
+                    reduceMotion
+                      ? { opacity: 0 }
+                      : { opacity: 0, scale: 0.96, y: 6 }
+                  }
+                  animate={
+                    reduceMotion
+                      ? { opacity: 1 }
+                      : { opacity: 1, scale: 1, y: 0 }
+                  }
+                  exit={
+                    reduceMotion
+                      ? { opacity: 0 }
+                      : { opacity: 0, scale: 0.96, y: 6 }
+                  }
                   transition={searchTransition}
                   onKeyDown={(event) => {
                     if (event.key !== "Escape") return;
@@ -341,15 +382,28 @@ const MenuSection = () => {
                   </button>
                 </motion.div>
               ) : (
-                <div data-search-trigger-wrap className="absolute left-1/2 top-0 -translate-x-1/2">
+                <div
+                  data-search-trigger-wrap
+                  className="absolute left-1/2 top-0 -translate-x-1/2"
+                >
                   <motion.button
                     key="search-trigger"
                     data-search-trigger
                     type="button"
                     onClick={openSearch}
-                    initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94 }}
-                    animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
-                    exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.94 }}
+                    initial={
+                      reduceMotion
+                        ? { opacity: 0 }
+                        : { opacity: 0, scale: 0.94 }
+                    }
+                    animate={
+                      reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }
+                    }
+                    exit={
+                      reduceMotion
+                        ? { opacity: 0 }
+                        : { opacity: 0, scale: 0.94 }
+                    }
                     transition={searchTransition}
                     className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-card/70 text-accent shadow-sm transition-colors hover:bg-card hover:text-primary"
                     aria-label={t("Άνοιγμα αναζήτησης", "Open menu search")}
@@ -365,27 +419,44 @@ const MenuSection = () => {
 
         {isSearchActive && (
           <p className="mt-2 text-center font-body text-[11px] text-muted-foreground">
-            {t("Φιλτραρισμένα", "Filtered")}: "{searchQuery.trim()}" - {totalSearchResults}{" "}
-            {t("αποτελέσματα", "results")}
+            {t("Φιλτραρισμένα", "Filtered")}: "{searchQuery.trim()}" -{" "}
+            {totalSearchResults} {t("αποτελέσματα", "results")}
           </p>
         )}
       </div>
 
       {!isSearchActive && (
-        <div className="mb-2 grid grid-cols-2 gap-3 px-4">
+        <div ref={categoryGridRef} className="mb-2 grid grid-cols-2 gap-3 px-4">
           {menuData.map((category, index) => (
             <motion.button
               type="button"
               key={category.id}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-30px" }}
-              transition={{ delay: index * 0.04, duration: 0.4 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() =>
-                setActiveCategory(activeCategory === category.id ? null : category.id)
+              initial={
+                shouldRevealCategoryCards
+                  ? false
+                  : { opacity: 0, y: 16, scale: 0.985 }
               }
-              className={`group relative aspect-[4/3] overflow-hidden rounded-2xl transition-all duration-300 touch-manipulation ${
+              animate={
+                shouldRevealCategoryCards
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 0, y: 16, scale: 0.985 }
+              }
+              transition={
+                reduceMotion
+                  ? { duration: 0.01 }
+                  : {
+                      duration: 0.34,
+                      ease: [0.22, 1, 0.36, 1],
+                      delay: shouldRevealCategoryCards ? index * 0.028 : 0,
+                    }
+              }
+              whileTap={reduceMotion ? undefined : { scale: 0.985 }}
+              onClick={() =>
+                setActiveCategory(
+                  activeCategory === category.id ? null : category.id,
+                )
+              }
+              className={`group relative aspect-[4/3] overflow-hidden rounded-2xl transition-all duration-300 touch-manipulation will-change-transform [transform:translateZ(0)] ${
                 activeCategory === category.id
                   ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg"
                   : "shadow-sm"
@@ -394,7 +465,7 @@ const MenuSection = () => {
               <img
                 src={category.image}
                 alt={lang === "el" ? category.nameEl : category.nameEn}
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 motion-safe:group-hover:scale-[1.03]"
                 loading="lazy"
                 width={640}
                 height={512}
@@ -421,7 +492,10 @@ const MenuSection = () => {
             exit={{ opacity: 0, y: -10 }}
             className="sticky top-[calc(env(safe-area-inset-top)+3.5rem)] z-40 border-b border-border/30 bg-background/95 shadow-sm backdrop-blur-md"
           >
-            <div ref={navRef} className="hide-scrollbar flex gap-1.5 overflow-x-auto px-4 py-2.5">
+            <div
+              ref={navRef}
+              className="hide-scrollbar flex gap-1.5 overflow-x-auto px-4 py-2.5"
+            >
               {menuData.map((category) => (
                 <button
                   type="button"
@@ -477,11 +551,15 @@ const MenuSection = () => {
                     </div>
 
                     {category.segments.map((segment, segmentIndex) => (
-                      <Fragment key={`search-segment-${category.id}-${segment.id}`}>
+                      <Fragment
+                        key={`search-segment-${category.id}-${segment.id}`}
+                      >
                         {category.hasStructuredSegments && (
                           <div className="bg-muted/25 px-4 py-2">
-                            <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                              {lang === "el" ? segment.titleEl : segment.titleEn}
+                            <h4 className="font-body text-[11px] font-semibold tracking-[0.14em] text-muted-foreground">
+                              {lang === "el"
+                                ? segment.titleEl
+                                : segment.titleEn}
                             </h4>
                           </div>
                         )}
@@ -490,8 +568,8 @@ const MenuSection = () => {
                           renderMenuItem(
                             item,
                             `${category.id}-${segment.id}-${index}-${item.price}`,
-                            Math.min(segmentIndex * 0.05 + index * 0.02, 0.22)
-                          )
+                            Math.min(segmentIndex * 0.05 + index * 0.02, 0.22),
+                          ),
                         )}
                       </Fragment>
                     ))}
@@ -510,7 +588,10 @@ const MenuSection = () => {
                   {t("Δεν βρέθηκαν αποτελέσματα", "No matches found")}
                 </p>
                 <p className="mt-1 font-body text-xs text-muted-foreground">
-                  {t("Δοκιμάστε άλλο όρο αναζήτησης.", "Try a different search term.")}
+                  {t(
+                    "Δοκιμάστε άλλο όρο αναζήτησης.",
+                    "Try a different search term.",
+                  )}
                 </p>
               </motion.div>
             )
@@ -549,7 +630,7 @@ const MenuSection = () => {
                   <Fragment key={`active-segment-${segment.id}`}>
                     {activeHasStructuredSegments && (
                       <div className="bg-muted/25 px-4 py-2.5">
-                        <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                        <h4 className="font-body text-[11px] font-semibold tracking-[0.16em] text-muted-foreground">
                           {lang === "el" ? segment.titleEl : segment.titleEn}
                         </h4>
                       </div>
@@ -559,41 +640,44 @@ const MenuSection = () => {
                       renderMenuItem(
                         item,
                         `${segment.id}-${index}-${item.price}`,
-                        Math.min(segmentIndex * 0.05 + index * 0.03, 0.24)
-                      )
+                        Math.min(segmentIndex * 0.05 + index * 0.03, 0.24),
+                      ),
                     )}
                   </Fragment>
                 ))}
               </div>
 
-              {(activeProductFootnotes.length > 0 || activeGeneralFootnotes.length > 0) && (
+              {(activeProductFootnotes.length > 0 ||
+                activeGeneralFootnotes.length > 0) && (
                 <div
                   data-category-footnotes
                   className="mt-2.5 border-t border-border/35 px-1 pt-2.5"
                 >
-                  <h4 className="font-body text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                    {t("Σημειώσεις", "Notes")}
-                  </h4>
-
                   {activeProductFootnotes.length > 0 && (
                     <div className="mt-1.5">
-                      <h5 className="font-body text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/90">
-                        {t("Σχετικά με τα προϊόντα", "Product notes")}
-                      </h5>
+                      {/* <h5 className="font-body text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/90">
+                        {t("Σημειώσεις", "Notes")}
+                      </h5> */}
                       <ul className="mt-1 space-y-1">
-                        {activeProductFootnotes.map((footnote: MenuFootnote, index) => (
-                          <li
-                            data-footnote-item
-                            data-footnote-type="product"
-                            key={`product-footnote-${index}-${footnote.marker ?? "text"}`}
-                            className="flex items-start gap-1.5 font-body text-[10px] leading-snug text-muted-foreground"
-                          >
-                            <span className="min-w-[1.35rem] pt-[1px] text-[10px] font-semibold text-accent">
-                              {footnote.marker ?? "•"}
-                            </span>
-                            <span>{lang === "el" ? footnote.textEl : footnote.textEn}</span>
-                          </li>
-                        ))}
+                        {activeProductFootnotes.map(
+                          (footnote: MenuFootnote, index) => (
+                            <li
+                              data-footnote-item
+                              data-footnote-type="product"
+                              key={`product-footnote-${index}-${footnote.marker ?? "text"}`}
+                              className="flex items-start gap-1.5 font-body text-[10px] leading-snug text-muted-foreground"
+                            >
+                              <span className="min-w-[1.35rem] pt-[1px] text-[10px] font-semibold text-accent">
+                                {footnote.marker ?? "•"}
+                              </span>
+                              <span>
+                                {lang === "el"
+                                  ? footnote.textEl
+                                  : footnote.textEn}
+                              </span>
+                            </li>
+                          ),
+                        )}
                       </ul>
                     </div>
                   )}
@@ -606,21 +690,29 @@ const MenuSection = () => {
                           : "mt-1.5"
                       }`}
                     >
-                      <h5 className="font-body text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/90">
+                      {/* <h5 className="font-body text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/90">
                         {t("Γενικές πληροφορίες", "General information")}
-                      </h5>
+                      </h5> */}
                       <ul className="mt-1 space-y-1">
-                        {activeGeneralFootnotes.map((footnote: MenuFootnote, index) => (
-                          <li
-                            data-footnote-item
-                            data-footnote-type="general"
-                            key={`general-footnote-${index}`}
-                            className="flex items-start gap-1.5 font-body text-[10px] leading-snug text-muted-foreground"
-                          >
-                            <span className="min-w-[1.35rem] pt-[1px] text-accent/70">•</span>
-                            <span>{lang === "el" ? footnote.textEl : footnote.textEn}</span>
-                          </li>
-                        ))}
+                        {activeGeneralFootnotes.map(
+                          (footnote: MenuFootnote, index) => (
+                            <li
+                              data-footnote-item
+                              data-footnote-type="general"
+                              key={`general-footnote-${index}`}
+                              className="flex items-start gap-1.5 font-body text-[10px] leading-snug text-muted-foreground"
+                            >
+                              <span className="min-w-[1.35rem] pt-[1px] text-accent/70">
+                                •
+                              </span>
+                              <span>
+                                {lang === "el"
+                                  ? footnote.textEl
+                                  : footnote.textEn}
+                              </span>
+                            </li>
+                          ),
+                        )}
                       </ul>
                     </div>
                   )}
@@ -634,7 +726,10 @@ const MenuSection = () => {
               animate={{ opacity: 1 }}
               className="py-8 text-center font-body text-sm text-muted-foreground"
             >
-              {t("Επιλέξτε μια κατηγορία παραπάνω", "Tap a category above to explore")}
+              {t(
+                "Επιλέξτε μια κατηγορία παραπάνω",
+                "Tap a category above to explore",
+              )}
             </motion.p>
           )}
         </AnimatePresence>

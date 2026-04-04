@@ -68,7 +68,7 @@ const Hero = () => {
           transition={{ delay: 0.65 }}
           whileTap={{ scale: 0.97 }}
         >
-          {t("Δες τον Κατάλογο", "View Menu")}
+          {t("Δες το μενού", "View Menu")}
           <ChevronDown size={16} />
         </motion.a>
       </div>

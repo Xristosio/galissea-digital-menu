@@ -10,7 +10,8 @@ const MAIN_PRIMARY_SIZES =
 const MAIN_SECONDARY_SIZES =
   "(max-width: 640px) calc(50vw - 1rem), (max-width: 1024px) calc(50vw - 2.5rem), 26rem";
 const STRIP_SIZES = "(max-width: 640px) 9.5rem, 11rem";
-const LIGHTBOX_SIZES = "(max-width: 640px) 92vw, (max-width: 1024px) 86vw, 72vw";
+const LIGHTBOX_SIZES =
+  "(max-width: 640px) 92vw, (max-width: 1024px) 86vw, 72vw";
 
 const Gallery = () => {
   const { lang, t } = useLang();
@@ -76,9 +77,11 @@ const Gallery = () => {
     const previousTouchAction = body.style.touchAction;
     const previousPaddingRight = body.style.paddingRight;
     const previousHtmlOverflow = documentElement.style.overflow;
-    const previousHtmlOverscrollBehavior = documentElement.style.overscrollBehavior;
+    const previousHtmlOverscrollBehavior =
+      documentElement.style.overscrollBehavior;
     const previousHtmlScrollBehavior = documentElement.style.scrollBehavior;
-    const scrollbarCompensation = window.innerWidth - documentElement.clientWidth;
+    const scrollbarCompensation =
+      window.innerWidth - documentElement.clientWidth;
 
     documentElement.style.overflow = "hidden";
     documentElement.style.overscrollBehavior = "none";
@@ -95,7 +98,9 @@ const Gallery = () => {
 
     return () => {
       const lockedOffset = Number.parseInt(body.style.top || "0", 10);
-      const nextScrollY = Number.isFinite(lockedOffset) ? Math.abs(lockedOffset) : scrollY;
+      const nextScrollY = Number.isFinite(lockedOffset)
+        ? Math.abs(lockedOffset)
+        : scrollY;
 
       documentElement.style.overflow = previousHtmlOverflow;
       documentElement.style.overscrollBehavior = previousHtmlOverscrollBehavior;
@@ -138,7 +143,9 @@ const Gallery = () => {
               type="button"
               key={image.id}
               onClick={(event) => openLightbox(image, event.currentTarget)}
-              aria-label={t("Μεγέθυνση εικόνας", "Open larger image") + `: ${caption}`}
+              aria-label={
+                t("Μεγέθυνση εικόνας", "Open larger image") + `: ${caption}`
+              }
               className={`group relative overflow-hidden rounded-2xl will-change-transform [transform:translateZ(0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                 index === 0 ? "col-span-2 aspect-[16/9]" : "aspect-square"
               }`}
@@ -181,7 +188,7 @@ const Gallery = () => {
           viewport={{ once: true, margin: "-30px" }}
           transition={{ duration: 0.35 }}
         >
-          <p className="px-1 font-body text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="px-1 font-body text-[11px] tracking-[0.18em] text-muted-foreground">
             {t("Περισσότερες στιγμές", "More moments")}
           </p>
 
@@ -196,7 +203,9 @@ const Gallery = () => {
                   key={image.id}
                   type="button"
                   onClick={(event) => openLightbox(image, event.currentTarget)}
-                  aria-label={t("Μεγέθυνση εικόνας", "Open larger image") + `: ${caption}`}
+                  aria-label={
+                    t("Μεγέθυνση εικόνας", "Open larger image") + `: ${caption}`
+                  }
                   className="group relative h-28 w-48 shrink-0 snap-start overflow-hidden rounded-xl border border-border/20 bg-background/40 will-change-transform [transform:translateZ(0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <div
@@ -244,9 +253,19 @@ const Gallery = () => {
             onClick={closeLightbox}
           >
             <motion.div
-              initial={reduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.96, y: 8 }}
-              animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
-              exit={reduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.96, y: 8 }}
+              initial={
+                reduceMotion
+                  ? { opacity: 1 }
+                  : { opacity: 0, scale: 0.96, y: 8 }
+              }
+              animate={
+                reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }
+              }
+              exit={
+                reduceMotion
+                  ? { opacity: 1 }
+                  : { opacity: 0, scale: 0.96, y: 8 }
+              }
               transition={{ duration: reduceMotion ? 0.12 : 0.22 }}
               className="relative w-full max-w-4xl"
               onClick={(event) => event.stopPropagation()}
@@ -265,7 +284,9 @@ const Gallery = () => {
                 src={activeImage.image.src}
                 srcSet={activeImage.image.srcSet}
                 sizes={LIGHTBOX_SIZES}
-                alt={lang === "el" ? activeImage.captionEl : activeImage.captionEn}
+                alt={
+                  lang === "el" ? activeImage.captionEl : activeImage.captionEn
+                }
                 className="max-h-[80vh] w-full rounded-2xl border border-white/15 bg-black/10 object-contain shadow-2xl"
                 width={activeImage.image.width}
                 height={activeImage.image.height}

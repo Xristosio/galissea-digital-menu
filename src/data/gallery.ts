@@ -66,8 +66,8 @@ export const galleryData: GalleryImage[] = [
       5712,
       4284,
     ),
-    captionEl: "Η θέα μας",
-    captionEn: "Our View",
+    captionEl: "",
+    captionEn: "",
   },
   {
     id: "venue-2",
@@ -81,8 +81,8 @@ export const galleryData: GalleryImage[] = [
       4032,
       3024,
     ),
-    captionEl: "Βραδινή ατμόσφαιρα",
-    captionEn: "Evening Vibes",
+    captionEl: "",
+    captionEn: "",
   },
   {
     id: "venue-3",
@@ -96,8 +96,8 @@ export const galleryData: GalleryImage[] = [
       3024,
       4032,
     ),
-    captionEl: "Ηλιοβασίλεμα στη Γαλησσά",
-    captionEn: "Galissas Sunset",
+    captionEl: "",
+    captionEn: "",
   },
   {
     id: "venue-4",
@@ -110,7 +110,7 @@ export const galleryData: GalleryImage[] = [
       1024,
       768,
     ),
-    captionEl: "Λεπτομέρεια από το Galissea",
-    captionEn: "A detail from Galissea",
+    captionEl: "",
+    captionEn: "",
   },
 ];
