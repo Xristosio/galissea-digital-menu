@@ -39,6 +39,15 @@ interface SearchCategoryResult {
   itemCount: number;
 }
 
+const getLastCardSpan = (itemCount: number, columnCount: number) => {
+  if (itemCount < 2 || columnCount < 2) return 1;
+
+  const remainder = itemCount % columnCount;
+  if (remainder === 0) return 1;
+
+  return columnCount - remainder + 1;
+};
+
 const getCategorySearchTerms = (category: MenuCategory) =>
   [category.nameEl, category.nameEn].map(normalizeSearchValue).join(" ");
 
@@ -69,6 +78,10 @@ const MenuSection = () => {
   const categoryGridRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [hasCategoryCardsEntered, setHasCategoryCardsEntered] = useState(false);
+  const [categoryGridColumns, setCategoryGridColumns] = useState(2);
+  const [categoryCardBaseHeight, setCategoryCardBaseHeight] = useState<number | null>(
+    null,
+  );
   const reduceMotion = useReducedMotion();
   const scrollBehavior: ScrollBehavior = reduceMotion ? "auto" : "smooth";
   const categoryGridInView = useInView(categoryGridRef, {
@@ -156,6 +169,10 @@ const MenuSection = () => {
   );
   const shouldRevealCategoryCards =
     reduceMotion || hasCategoryCardsEntered || categoryGridInView;
+  const lastCardSpan = useMemo(
+    () => getLastCardSpan(menuData.length, categoryGridColumns),
+    [categoryGridColumns],
+  );
 
   const searchTransition = reduceMotion
     ? { duration: 0.12 }
@@ -259,6 +276,44 @@ const MenuSection = () => {
     if (!categoryGridInView) return;
     setHasCategoryCardsEntered(true);
   }, [categoryGridInView]);
+
+  useEffect(() => {
+    const grid = categoryGridRef.current;
+    if (!grid) return;
+
+    const readGridLayout = () => {
+      const template = window.getComputedStyle(grid).gridTemplateColumns;
+      const parsedCount = template
+        .split(" ")
+        .map((track) => track.trim())
+        .filter(Boolean).length;
+      const nextCount = Math.max(1, parsedCount || 1);
+      const firstCard = grid.querySelector("button");
+      const nextBaseHeight =
+        firstCard instanceof HTMLElement ? firstCard.offsetHeight : null;
+
+      setCategoryGridColumns((prev) => (prev === nextCount ? prev : nextCount));
+      setCategoryCardBaseHeight((prev) =>
+        prev === nextBaseHeight ? prev : nextBaseHeight,
+      );
+    };
+
+    readGridLayout();
+    window.addEventListener("resize", readGridLayout);
+    window.addEventListener("orientationchange", readGridLayout);
+
+    let observer: ResizeObserver | null = null;
+    if ("ResizeObserver" in window) {
+      observer = new ResizeObserver(readGridLayout);
+      observer.observe(grid);
+    }
+
+    return () => {
+      window.removeEventListener("resize", readGridLayout);
+      window.removeEventListener("orientationchange", readGridLayout);
+      observer?.disconnect();
+    };
+  }, [isSearchActive]);
 
   const renderMenuItem = (item: MenuItem, key: string, delay: number) => {
     const name = lang === "el" ? item.nameEl : item.nameEn;
@@ -431,6 +486,16 @@ const MenuSection = () => {
             <motion.button
               type="button"
               key={category.id}
+              style={
+                index === menuData.length - 1 && lastCardSpan > 1
+                  ? {
+                      gridColumn: `span ${lastCardSpan} / span ${lastCardSpan}`,
+                      ...(categoryCardBaseHeight
+                        ? { height: `${categoryCardBaseHeight}px`, aspectRatio: "auto" }
+                        : {}),
+                    }
+                  : undefined
+              }
               initial={
                 shouldRevealCategoryCards
                   ? false
