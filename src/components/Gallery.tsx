@@ -18,7 +18,6 @@ const Gallery = () => {
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   const [activeImage, setActiveImage] = useState<GalleryImage | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const lastTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   const primaryImages = galleryData.slice(0, MAIN_IMAGE_COUNT);
   const remainingImages = galleryData.slice(MAIN_IMAGE_COUNT);
@@ -34,16 +33,13 @@ const Gallery = () => {
     setLoadedImages((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
   };
 
-  const openLightbox = (image: GalleryImage, trigger: HTMLButtonElement) => {
-    lastTriggerRef.current = trigger;
+  const openLightbox = (image: GalleryImage, trigger?: HTMLButtonElement) => {
+    trigger?.blur();
     setActiveImage(image);
   };
 
   const closeLightbox = () => {
     setActiveImage(null);
-    window.setTimeout(() => {
-      lastTriggerRef.current?.focus();
-    }, 0);
   };
 
   useEffect(() => {
@@ -70,18 +66,50 @@ const Gallery = () => {
     if (!activeImage) return;
 
     const { body, documentElement } = document;
+    const scrollY = window.scrollY;
+    const previousPosition = body.style.position;
+    const previousTop = body.style.top;
+    const previousLeft = body.style.left;
+    const previousRight = body.style.right;
+    const previousWidth = body.style.width;
     const previousOverflow = body.style.overflow;
+    const previousTouchAction = body.style.touchAction;
     const previousPaddingRight = body.style.paddingRight;
+    const previousHtmlOverflow = documentElement.style.overflow;
+    const previousHtmlOverscrollBehavior = documentElement.style.overscrollBehavior;
+    const previousHtmlScrollBehavior = documentElement.style.scrollBehavior;
     const scrollbarCompensation = window.innerWidth - documentElement.clientWidth;
 
+    documentElement.style.overflow = "hidden";
+    documentElement.style.overscrollBehavior = "none";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
     body.style.overflow = "hidden";
+    body.style.touchAction = "none";
     if (scrollbarCompensation > 0) {
       body.style.paddingRight = `${scrollbarCompensation}px`;
     }
 
     return () => {
+      const lockedOffset = Number.parseInt(body.style.top || "0", 10);
+      const nextScrollY = Number.isFinite(lockedOffset) ? Math.abs(lockedOffset) : scrollY;
+
+      documentElement.style.overflow = previousHtmlOverflow;
+      documentElement.style.overscrollBehavior = previousHtmlOverscrollBehavior;
+      body.style.position = previousPosition;
+      body.style.top = previousTop;
+      body.style.left = previousLeft;
+      body.style.right = previousRight;
+      body.style.width = previousWidth;
       body.style.overflow = previousOverflow;
+      body.style.touchAction = previousTouchAction;
       body.style.paddingRight = previousPaddingRight;
+      documentElement.style.scrollBehavior = "auto";
+      window.scrollTo(0, nextScrollY);
+      documentElement.style.scrollBehavior = previousHtmlScrollBehavior;
     };
   }, [activeImage]);
 
@@ -208,7 +236,7 @@ const Gallery = () => {
             role="dialog"
             aria-modal="true"
             aria-label={t("Μεγέθυνση εικόνας", "Image preview")}
-            className="fixed inset-0 z-[80] flex items-center justify-center bg-background/75 px-4 py-[max(1rem,env(safe-area-inset-top))] backdrop-blur-md"
+            className="fixed inset-0 z-[80] flex items-center justify-center overscroll-contain bg-background/75 px-4 py-[max(1rem,env(safe-area-inset-top))] backdrop-blur-md"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

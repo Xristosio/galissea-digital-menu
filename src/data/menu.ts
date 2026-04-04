@@ -34,6 +34,7 @@ export interface MenuCategory {
   image: string;
   items?: MenuItem[];
   segments?: MenuSegment[];
+  // Optional category-level product notes shown before general notes.
   footnotes?: MenuFootnote[];
 }
 
@@ -42,6 +43,8 @@ export interface MenuFootnote {
   textEl: string;
   textEn: string;
 }
+
+type MenuMarker = NonNullable<MenuItem["marker"]>;
 
 export const getCategorySegments = (category: MenuCategory): MenuSegment[] => {
   if (category.segments?.length) {
@@ -65,17 +68,22 @@ export const getCategorySegments = (category: MenuCategory): MenuSegment[] => {
 export const getCategoryItemsCount = (category: MenuCategory) =>
   getCategorySegments(category).reduce((total, segment) => total + segment.items.length, 0);
 
-export const sharedMenuFootnotes: MenuFootnote[] = [
-  {
+const markerOrder: MenuMarker[] = ["*", "**"];
+
+export const sharedProductFootnotesByMarker: Record<MenuMarker, MenuFootnote> = {
+  "*": {
     marker: "*",
     textEl: "Σερβίρεται με chips",
     textEn: "Served with chips",
   },
-  {
+  "**": {
     marker: "**",
     textEl: "Σερβίρεται με πατάτες τηγανητές",
     textEn: "Served with french fries",
   },
+};
+
+export const sharedGeneralMenuNotes: MenuFootnote[] = [
   {
     textEl: "Παρακαλούμε ενημερώστε το προσωπικό για τυχόν αλλεργίες ή δυσανεξίες.",
     textEn: "Please inform the staff, if any allergies or intolerances.",
@@ -94,10 +102,26 @@ export const sharedMenuFootnotes: MenuFootnote[] = [
   },
 ];
 
-export const getCategoryFootnotes = (category: MenuCategory): MenuFootnote[] => [
-  ...sharedMenuFootnotes,
+const getCategoryMarkers = (category: MenuCategory): MenuMarker[] => {
+  const markers = new Set<MenuMarker>();
+
+  for (const segment of getCategorySegments(category)) {
+    for (const item of segment.items) {
+      if (!item.marker) continue;
+      markers.add(item.marker);
+    }
+  }
+
+  return markerOrder.filter((marker) => markers.has(marker));
+};
+
+export const getCategoryProductFootnotes = (category: MenuCategory): MenuFootnote[] => [
+  ...getCategoryMarkers(category).map((marker) => sharedProductFootnotesByMarker[marker]),
   ...(category.footnotes ?? []),
 ];
+
+export const getCategoryGeneralFootnotes = (_category: MenuCategory): MenuFootnote[] =>
+  sharedGeneralMenuNotes;
 
 export const menuData: MenuCategory[] = [
   {

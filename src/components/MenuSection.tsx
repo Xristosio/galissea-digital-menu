@@ -4,8 +4,9 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Search, X } from "lucide-react";
 import { useLang } from "@/context/LangContext";
 import {
-  getCategoryFootnotes,
+  getCategoryGeneralFootnotes,
   getCategoryItemsCount,
+  getCategoryProductFootnotes,
   getCategorySegments,
   menuData,
   type MenuCategory,
@@ -69,8 +70,12 @@ const MenuSection = () => {
     () => (activeCat ? getCategorySegments(activeCat) : []),
     [activeCat]
   );
-  const activeFootnotes = useMemo(
-    () => (activeCat ? getCategoryFootnotes(activeCat) : []),
+  const activeProductFootnotes = useMemo(
+    () => (activeCat ? getCategoryProductFootnotes(activeCat) : []),
+    [activeCat]
+  );
+  const activeGeneralFootnotes = useMemo(
+    () => (activeCat ? getCategoryGeneralFootnotes(activeCat) : []),
     [activeCat]
   );
   const activeHasStructuredSegments = Boolean(activeCat?.segments?.length);
@@ -561,32 +566,64 @@ const MenuSection = () => {
                 ))}
               </div>
 
-              {activeFootnotes.length > 0 && (
+              {(activeProductFootnotes.length > 0 || activeGeneralFootnotes.length > 0) && (
                 <div
                   data-category-footnotes
-                  className="mt-3 rounded-2xl border border-border/40 bg-card/35 px-4 py-3.5"
+                  className="mt-2.5 border-t border-border/35 px-1 pt-2.5"
                 >
-                  <h4 className="font-body text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                  <h4 className="font-body text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                     {t("Σημειώσεις", "Notes")}
                   </h4>
-                  <ul className="mt-2 space-y-1.5">
-                    {activeFootnotes.map((footnote: MenuFootnote, index) => (
-                      <li
-                        data-footnote-item
-                        key={`footnote-${index}-${footnote.marker ?? "text"}`}
-                        className="flex items-start gap-2 font-body text-[11px] leading-relaxed text-muted-foreground"
-                      >
-                        {footnote.marker ? (
-                          <span className="min-w-[1.5rem] pt-[1px] font-semibold text-accent">
-                            {footnote.marker}
-                          </span>
-                        ) : (
-                          <span className="min-w-[1.5rem] pt-[1px] text-accent/70">•</span>
-                        )}
-                        <span>{lang === "el" ? footnote.textEl : footnote.textEn}</span>
-                      </li>
-                    ))}
-                  </ul>
+
+                  {activeProductFootnotes.length > 0 && (
+                    <div className="mt-1.5">
+                      <h5 className="font-body text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/90">
+                        {t("Σχετικά με τα προϊόντα", "Product notes")}
+                      </h5>
+                      <ul className="mt-1 space-y-1">
+                        {activeProductFootnotes.map((footnote: MenuFootnote, index) => (
+                          <li
+                            data-footnote-item
+                            data-footnote-type="product"
+                            key={`product-footnote-${index}-${footnote.marker ?? "text"}`}
+                            className="flex items-start gap-1.5 font-body text-[10px] leading-snug text-muted-foreground"
+                          >
+                            <span className="min-w-[1.35rem] pt-[1px] text-[10px] font-semibold text-accent">
+                              {footnote.marker ?? "•"}
+                            </span>
+                            <span>{lang === "el" ? footnote.textEl : footnote.textEn}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {activeGeneralFootnotes.length > 0 && (
+                    <div
+                      className={`${
+                        activeProductFootnotes.length > 0
+                          ? "mt-2 border-t border-border/25 pt-2"
+                          : "mt-1.5"
+                      }`}
+                    >
+                      <h5 className="font-body text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground/90">
+                        {t("Γενικές πληροφορίες", "General information")}
+                      </h5>
+                      <ul className="mt-1 space-y-1">
+                        {activeGeneralFootnotes.map((footnote: MenuFootnote, index) => (
+                          <li
+                            data-footnote-item
+                            data-footnote-type="general"
+                            key={`general-footnote-${index}`}
+                            className="flex items-start gap-1.5 font-body text-[10px] leading-snug text-muted-foreground"
+                          >
+                            <span className="min-w-[1.35rem] pt-[1px] text-accent/70">•</span>
+                            <span>{lang === "el" ? footnote.textEl : footnote.textEn}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>
