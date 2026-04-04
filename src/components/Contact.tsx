@@ -11,19 +11,13 @@ const Contact = () => {
   const items = [
     {
       icon: <MapPin size={18} />,
-      label: t(
-        "Γαλησσάς, Σύρος",
-        "Galissas, Syros",
-      ),
+      label: t("Γαλησσάς, Σύρος", "Galissas, Syros"),
       href: openUrl,
       external: true,
     },
     {
       icon: <Clock size={18} />,
-      label: t(
-        "Καθημερινά 09:00 - 22:00",
-        "Daily 09:00 - 22:00",
-      ),
+      label: t("Καθημερινά 09:00 - 22:00", "Daily 09:00 - 22:00"),
     },
     {
       icon: <Phone size={18} />,
@@ -100,8 +94,8 @@ const Contact = () => {
           </h3>
           <p className="mt-1 font-body text-xs leading-relaxed text-muted-foreground">
             {t(
-              "Ακολουθήστε μας για στιγμές από την παραλία της Γαλησσάς.",
-              "Follow us for moments from the beach at Galissas.",
+              "Ακολουθήστε μας για να βλέπετε όλα τα νέα και τις ανακοινώσεις.",
+              "Follow us for news and announcements.",
             )}
           </p>
 

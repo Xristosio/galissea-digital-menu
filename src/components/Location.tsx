@@ -23,8 +23,8 @@ const Location = () => {
           <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
           <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">
             {t(
-              "Ανακαλύψτε το Galissea στην παραλία της Γαλησσάς, στη Σύρο.",
-              "Find Galissea by the beach in Galissas, Syros."
+              "Ανακαλύψτε το Galissea στην παραλία του Γαλησσά, στη Σύρο.",
+              "Find Galissea by the beach in Galissas, Syros.",
             )}
           </p>
         </div>
@@ -47,11 +47,11 @@ const Location = () => {
                 {missingConfig
                   ? t(
                       "Λείπουν ρυθμίσεις του Google Maps. Χρησιμοποιήστε το παρακάτω link για πλοήγηση.",
-                      "Google Maps configuration is incomplete. Use the link below for directions."
+                      "Google Maps configuration is incomplete. Use the link below for directions.",
                     )
                   : t(
                       "Ο χάρτης δεν είναι διαθέσιμος προς το παρόν.",
-                      "Map preview is currently unavailable."
+                      "Map preview is currently unavailable.",
                     )}
               </p>
             </div>

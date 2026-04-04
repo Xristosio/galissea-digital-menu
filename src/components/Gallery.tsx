@@ -94,7 +94,7 @@ const Gallery = () => {
           transition={{ duration: 0.35 }}
         >
           <p className="px-1 font-body text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-            {t("Περισσότερες στιγμές", "More moments")}
+            {t("Περισσότερα", "More moments")}
           </p>
 
           <div className="hide-scrollbar mt-2 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1 touch-pan-x">

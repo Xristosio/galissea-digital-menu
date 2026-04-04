@@ -24,7 +24,7 @@ const QrShareSection = () => {
           <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
           <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">
             {t(
-              "Αν είσαι ήδη στην ξαπλώστρα, δείξε το QR στην παρέα για γρήγορη πρόσβαση στο μενού.",
+              "Δείξε το QR στην παρέα για γρήγορη πρόσβαση στο μενού.",
               "Show this QR to friends nearby for instant menu access.",
             )}
           </p>
