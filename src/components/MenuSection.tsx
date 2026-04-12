@@ -481,7 +481,10 @@ const MenuSection = () => {
       </div>
 
       {!isSearchActive && (
-        <div ref={categoryGridRef} className="mb-2 grid grid-cols-2 gap-3 px-4">
+        <div
+          ref={categoryGridRef}
+          className="mx-auto mb-2 grid max-w-6xl grid-cols-2 gap-3 px-4 lg:grid-cols-4 xl:grid-cols-5"
+        >
           {menuData.map((category, index) => (
             <motion.button
               type="button"
@@ -521,7 +524,7 @@ const MenuSection = () => {
                   activeCategory === category.id ? null : category.id,
                 )
               }
-              className={`group relative aspect-[4/3] overflow-hidden rounded-2xl transition-all duration-300 touch-manipulation will-change-transform [transform:translateZ(0)] ${
+              className={`group relative aspect-[4/3] overflow-hidden rounded-2xl transition-all duration-300 touch-manipulation will-change-transform [transform:translateZ(0)] lg:aspect-[5/4] ${
                 activeCategory === category.id
                   ? "ring-2 ring-primary ring-offset-2 ring-offset-background shadow-lg"
                   : "shadow-sm"
@@ -536,11 +539,11 @@ const MenuSection = () => {
                 height={512}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-3 text-left">
-                <span className="block font-display text-sm font-semibold leading-tight text-white drop-shadow-md">
+              <div className="absolute bottom-0 left-0 right-0 p-3 text-left lg:p-2.5">
+                <span className="block font-display text-sm font-semibold leading-tight text-white drop-shadow-md lg:text-[0.95rem]">
                   {lang === "el" ? category.nameEl : category.nameEn}
                 </span>
-                <span className="mt-0.5 block font-body text-[10px] text-white/70">
+                <span className="mt-0.5 block font-body text-[10px] text-white/70 lg:text-[11px]">
                   {getCategoryItemsCount(category)} {t("προϊόντα", "items")}
                 </span>
               </div>
@@ -591,7 +594,7 @@ const MenuSection = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.24 }}
-                className="space-y-4"
+                className="mx-auto max-w-4xl space-y-4"
               >
                 {filteredCategories.map((category) => (
                   <div
@@ -667,6 +670,7 @@ const MenuSection = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.25 }}
+              className="mx-auto max-w-4xl"
             >
               <div className="mb-3 flex items-center justify-between pt-2">
                 <div className="flex items-center gap-3">

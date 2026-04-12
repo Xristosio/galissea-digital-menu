@@ -120,7 +120,8 @@ const Gallery = () => {
 
   return (
     <section id="gallery" className="px-4 py-12">
-      <div className="mb-6 text-center">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-6 text-center">
         <motion.h2
           className="mb-1 font-display text-2xl font-bold text-primary"
           initial={{ opacity: 0, y: 16 }}
@@ -132,7 +133,7 @@ const Gallery = () => {
         <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 lg:mx-auto lg:max-w-4xl lg:gap-3">
         {primaryImages.map((image, index) => {
           const loadKey = `main-${image.id}`;
           const isLoaded = Boolean(loadedImages[loadKey]);
@@ -147,7 +148,9 @@ const Gallery = () => {
                 t("Μεγέθυνση εικόνας", "Open larger image") + `: ${caption}`
               }
               className={`group relative overflow-hidden rounded-2xl will-change-transform [transform:translateZ(0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-                index === 0 ? "col-span-2 aspect-[16/9]" : "aspect-square"
+                index === 0
+                  ? "col-span-2 aspect-[16/9] lg:aspect-[16/8]"
+                  : "aspect-square lg:aspect-[5/4]"
               }`}
               initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 24 }}
               whileInView={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
@@ -178,11 +181,11 @@ const Gallery = () => {
             </motion.button>
           );
         })}
-      </div>
+        </div>
 
       {stripImages.length > 0 && (
         <motion.div
-          className="mt-4 rounded-2xl bg-card/35 p-2.5"
+          className="mt-4 rounded-2xl bg-card/35 p-2.5 lg:mx-auto lg:max-w-4xl"
           initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: 10 }}
           whileInView={reduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-30px" }}
@@ -192,7 +195,7 @@ const Gallery = () => {
             {t("Περισσότερες στιγμές", "More moments")}
           </p>
 
-          <div className="hide-scrollbar mt-2 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1 touch-pan-x">
+          <div className="hide-scrollbar mt-2 flex snap-x snap-mandatory gap-2 overflow-x-auto px-1 pb-1 touch-pan-x lg:gap-3">
             {stripImages.map((image) => {
               const loadKey = `strip-${image.id}`;
               const isLoaded = Boolean(loadedImages[loadKey]);
@@ -206,7 +209,7 @@ const Gallery = () => {
                   aria-label={
                     t("Μεγέθυνση εικόνας", "Open larger image") + `: ${caption}`
                   }
-                  className="group relative h-28 w-48 shrink-0 snap-start overflow-hidden rounded-xl border border-border/20 bg-background/40 will-change-transform [transform:translateZ(0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="group relative h-28 w-48 shrink-0 snap-start overflow-hidden rounded-xl border border-border/20 bg-background/40 will-change-transform [transform:translateZ(0)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:h-24 lg:w-40"
                 >
                   <div
                     className={`absolute inset-0 bg-muted/30 transition-opacity duration-300 ${
@@ -238,6 +241,7 @@ const Gallery = () => {
           </div>
         </motion.div>
       )}
+      </div>
 
       <AnimatePresence>
         {activeImage && (
