@@ -430,10 +430,10 @@ const MenuSection = () => {
                   <button
                     type="button"
                     onClick={closeSearch}
-                    className="inline-flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    className="inline-flex h-7 flex-shrink-0 items-center justify-center rounded-full px-2.5 font-body text-[11px] font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                     aria-label={t("Κλείσιμο αναζήτησης", "Close search")}
                   >
-                    <X size={14} />
+                    {t("Κλείσιμο", "Close")}
                   </button>
                 </motion.div>
               ) : (
