@@ -5,6 +5,7 @@ import QrShareSection from "@/components/QrShareSection";
 import About from "@/components/About";
 import Gallery from "@/components/Gallery";
 import Location from "@/components/Location";
+import Reviews from "@/components/Reviews";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
@@ -20,6 +21,7 @@ const Index = () => {
         <About />
         <Gallery />
         <Location />
+        <Reviews />
         <QrShareSection />
         <Contact />
         <Footer />
