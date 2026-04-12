@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 import { ExternalLink, MapPin } from "lucide-react";
+import { BUSINESS_ADDRESS } from "@/config/business";
 import { useLang } from "@/context/LangContext";
 import { resolveMapsConfig } from "@/config/maps";
 
 const Location = () => {
-  const { t } = useLang();
+  const { lang, t } = useLang();
   const { embedUrl, openUrl, missingConfig } = resolveMapsConfig();
 
   return (
@@ -18,13 +19,13 @@ const Location = () => {
       >
         <div className="mb-6 text-center">
           <h2 className="mb-1 font-display text-2xl font-bold text-primary">
-            {t("Πού θα μας βρείτε", "Find Us")}
+            {t("Πού θα μας βρείτε", "Find us")}
           </h2>
           <div className="mx-auto h-0.5 w-12 rounded-full bg-accent/60" />
           <p className="mt-3 font-body text-sm leading-relaxed text-muted-foreground">
             {t(
-              "Ανακαλύψτε το Galissea στην παραλία του Γαλησσά, στη Σύρο.",
-              "Find Galissea by the beach in Galissas, Syros.",
+              "Βρείτε το Galissea στην παραλία του Γαλησσά, στη Σύρο.",
+              "Find Galissea by Galissas Beach in Syros.",
             )}
           </p>
         </div>
@@ -61,7 +62,9 @@ const Location = () => {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <MapPin size={16} className="text-accent" />
               <span className="font-body">
-                {t("Γαλησσάς, Σύρος", "Galissas, Syros")}
+                {lang === "el"
+                  ? BUSINESS_ADDRESS.compactEl
+                  : BUSINESS_ADDRESS.compactEn}
               </span>
             </div>
             <a

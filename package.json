@@ -5,11 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npm run build:client && npm run build:ssr && node scripts/prerender.mjs",
+    "build:client": "vite build",
+    "build:ssr": "vite build --ssr src/entry-server.tsx --outDir dist/server",
     "build:dev": "vite build --mode development",
     "optimize:gallery-images": "python scripts/optimize_gallery_images.py",
     "lint": "eslint .",
     "preview": "vite preview",
+    "seo:check": "node scripts/check-seo.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },

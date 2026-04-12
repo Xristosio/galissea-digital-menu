@@ -1,13 +1,23 @@
 import { useReducedMotion } from "framer-motion";
 import { Instagram, MapPin, Phone } from "lucide-react";
 import type { MouseEvent } from "react";
+import { useLocation } from "react-router-dom";
+import {
+  BUSINESS_PHONE_URI,
+} from "@/config/business";
+import { SOCIAL_LINKS } from "@/config/site";
 import { useLang } from "@/context/LangContext";
+import { getLocalePath } from "@/i18n/routing";
+import type { Lang } from "@/i18n/types";
 
 const SCROLL_OFFSET = 12;
 
 const Navbar = () => {
-  const { lang, setLang, t } = useLang();
+  const { lang, t } = useLang();
+  const location = useLocation();
   const reduceMotion = useReducedMotion();
+  const currentHash = location.hash || "";
+  const localeHref = (targetLang: Lang) => getLocalePath(targetLang, currentHash);
 
   const handleLocationClick = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
@@ -40,12 +50,9 @@ const Navbar = () => {
 
         <div className="flex items-center gap-1.5">
           <a
-            href="tel:+302281045686"
+            href={BUSINESS_PHONE_URI}
             className="inline-flex h-8 w-8 items-center justify-center rounded-full text-accent transition-all hover:bg-card/70 hover:text-primary active:scale-95"
-            aria-label={t(
-              "Τηλέφωνο",
-              "Phone",
-            )}
+            aria-label={t("Τηλέφωνο", "Phone")}
           >
             <Phone size={16} />
           </a>
@@ -53,19 +60,13 @@ const Navbar = () => {
             href="#location"
             onClick={handleLocationClick}
             className="inline-flex h-8 w-8 items-center justify-center rounded-full text-accent transition-all hover:bg-card/70 hover:text-primary active:scale-95"
-            aria-label={t(
-              "Πού θα μας βρείτε",
-              "Find us",
-            )}
-            title={t(
-              "Πού θα μας βρείτε",
-              "Find us",
-            )}
+            aria-label={t("Πού θα μας βρείτε", "Find us")}
+            title={t("Πού θα μας βρείτε", "Find us")}
           >
             <MapPin size={16} />
           </a>
           <a
-            href="https://www.instagram.com/galissea_bar/"
+            href={SOCIAL_LINKS.instagram}
             target="_blank"
             rel="noopener noreferrer"
             className="hidden h-8 w-8 items-center justify-center rounded-full text-accent transition-all hover:bg-card/70 hover:text-primary active:scale-95 min-[361px]:inline-flex"
@@ -75,38 +76,32 @@ const Navbar = () => {
           </a>
 
           <div className="ml-1 flex rounded-full bg-muted p-0.5 text-xs font-body font-semibold">
-            <button
-              type="button"
-              onClick={() => setLang("el")}
-              aria-label={t(
-                "Ελληνικά",
-                "Greek",
-              )}
-              aria-pressed={lang === "el"}
-              className={`min-w-9 rounded-full px-2.5 py-1.5 transition-all ${
+            <a
+              href={localeHref("el")}
+              hrefLang="el-GR"
+              aria-label={t("Ελληνικά", "Greek")}
+              aria-current={lang === "el" ? "page" : undefined}
+              className={`min-w-9 rounded-full px-2.5 py-1.5 text-center transition-all ${
                 lang === "el"
                   ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
               EL
-            </button>
-            <button
-              type="button"
-              onClick={() => setLang("en")}
-              aria-label={t(
-                "Αγγλικά",
-                "English",
-              )}
-              aria-pressed={lang === "en"}
-              className={`min-w-9 rounded-full px-2.5 py-1.5 transition-all ${
+            </a>
+            <a
+              href={localeHref("en")}
+              hrefLang="en"
+              aria-label={t("Αγγλικά", "English")}
+              aria-current={lang === "en" ? "page" : undefined}
+              className={`min-w-9 rounded-full px-2.5 py-1.5 text-center transition-all ${
                 lang === "en"
                   ? "bg-primary text-primary-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
               EN
-            </button>
+            </a>
           </div>
         </div>
       </div>

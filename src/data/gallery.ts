@@ -66,8 +66,8 @@ export const galleryData: GalleryImage[] = [
       5712,
       4284,
     ),
-    captionEl: "",
-    captionEn: "",
+    captionEl: "Εξωτερικός χώρος του Galissea δίπλα στην παραλία του Γαλησσά",
+    captionEn: "Galissea outdoor seating area by Galissas Beach",
   },
   {
     id: "venue-2",
@@ -81,8 +81,8 @@ export const galleryData: GalleryImage[] = [
       4032,
       3024,
     ),
-    captionEl: "",
-    captionEn: "",
+    captionEl: "Στιγμιότυπο από την ατμόσφαιρα του Galissea στη Σύρο",
+    captionEn: "A glimpse of the Galissea atmosphere in Syros",
   },
   {
     id: "venue-3",
@@ -96,8 +96,8 @@ export const galleryData: GalleryImage[] = [
       3024,
       4032,
     ),
-    captionEl: "",
-    captionEn: "",
+    captionEl: "Χώρος lounge και καλοκαιρινή εμπειρία στο Galissea",
+    captionEn: "Lounge setting and summer atmosphere at Galissea",
   },
   {
     id: "venue-4",
@@ -110,7 +110,7 @@ export const galleryData: GalleryImage[] = [
       1024,
       768,
     ),
-    captionEl: "",
-    captionEn: "",
+    captionEl: "Το Galissea στον Γαλησσά της Σύρου",
+    captionEn: "Galissea in Galissas, Syros",
   },
 ];

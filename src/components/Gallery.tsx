@@ -172,7 +172,6 @@ const Gallery = () => {
                 }`}
                 loading={index === 0 ? "eager" : "lazy"}
                 decoding={index === 0 ? "sync" : "async"}
-                fetchPriority={index === 0 ? "high" : "auto"}
                 width={image.image.width}
                 height={image.image.height}
                 onLoad={() => markLoaded(loadKey)}
@@ -226,7 +225,6 @@ const Gallery = () => {
                     }`}
                     loading="lazy"
                     decoding="async"
-                    fetchPriority="low"
                     width={image.image.width}
                     height={image.image.height}
                     onLoad={() => markLoaded(loadKey)}

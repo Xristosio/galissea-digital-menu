@@ -1,10 +1,15 @@
 import { motion } from "framer-motion";
 import { ChevronDown, Clock, MapPin } from "lucide-react";
+import {
+  BRAND_LOGO_PATH,
+  BUSINESS_ADDRESS,
+  BUSINESS_HOURS,
+  HERO_SUMMARY,
+} from "@/config/business";
 import { useLang } from "@/context/LangContext";
-import logo from "@/assets/logo.png";
 
 const Hero = () => {
-  const { t } = useLang();
+  const { lang, t } = useLang();
 
   return (
     <section
@@ -16,11 +21,13 @@ const Hero = () => {
 
       <div className="relative z-10 mx-auto flex max-w-sm flex-col items-center text-center">
         <motion.img
-          src={logo}
-          alt="Galissea"
+          src={BRAND_LOGO_PATH}
+          alt={t("Λογότυπο Galissea", "Galissea logo")}
           className="mb-5 h-32 w-32 drop-shadow-lg"
-          width={512}
-          height={512}
+          width={1563}
+          height={1563}
+          loading="eager"
+          decoding="async"
           initial={{ opacity: 0, scale: 0.7, rotate: -5 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
@@ -36,13 +43,22 @@ const Hero = () => {
         </motion.h1>
 
         <motion.p
-          className="mb-6 font-body text-xs font-medium uppercase tracking-[0.35em] text-accent"
+          className="mb-4 font-body text-xs font-medium uppercase tracking-[0.35em] text-accent"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
           Cafe · Snack · Bar
         </motion.p>
+
+        {/* <motion.p
+          className="mb-6 max-w-xs font-body text-sm leading-relaxed text-muted-foreground"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45, duration: 0.45 }}
+        >
+          {HERO_SUMMARY[lang]}
+        </motion.p> */}
 
         <motion.div
           className="mb-8 flex flex-wrap justify-center gap-3"
@@ -52,11 +68,13 @@ const Hero = () => {
         >
           <span className="inline-flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5 font-body text-xs text-muted-foreground backdrop-blur-sm">
             <MapPin size={12} className="text-accent" />
-            {t("Γαλησσάς, Σύρος", "Galissas, Syros")}
+            {lang === "el"
+              ? BUSINESS_ADDRESS.compactEl
+              : BUSINESS_ADDRESS.compactEn}
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-card/80 px-3 py-1.5 font-body text-xs text-muted-foreground backdrop-blur-sm">
             <Clock size={12} className="text-accent" />
-            09:00 - 22:00
+            {BUSINESS_HOURS.opens} - {BUSINESS_HOURS.closes}
           </span>
         </motion.div>
 
@@ -68,7 +86,7 @@ const Hero = () => {
           transition={{ delay: 0.65 }}
           whileTap={{ scale: 0.97 }}
         >
-          {t("Δες το μενού", "View Menu")}
+          {t("Δες το μενού", "View menu")}
           <ChevronDown size={16} />
         </motion.a>
       </div>

@@ -9,13 +9,19 @@ import Reviews from "@/components/Reviews";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
-import { LangProvider } from "@/context/LangContext";
+import { LangProvider, useLang } from "@/context/LangContext";
+import type { Lang } from "@/i18n/types";
 
-const Index = () => {
+const IndexContent = () => {
+  const { t } = useLang();
+
   return (
-    <LangProvider>
-      <div className="min-h-screen bg-background">
-        <Navbar />
+    <div className="min-h-screen bg-background">
+      <a href="#main-content" className="skip-link">
+        {t("Μετάβαση στο περιεχόμενο", "Skip to content")}
+      </a>
+      <Navbar />
+      <main id="main-content">
         <Hero />
         <MenuSection />
         <About />
@@ -24,9 +30,17 @@ const Index = () => {
         <Reviews />
         <QrShareSection />
         <Contact />
-        <Footer />
-        <BackToTopButton />
-      </div>
+      </main>
+      <Footer />
+      <BackToTopButton />
+    </div>
+  );
+};
+
+const Index = ({ initialLang }: { initialLang: Lang }) => {
+  return (
+    <LangProvider initialLang={initialLang}>
+      <IndexContent />
     </LangProvider>
   );
 };

@@ -23,14 +23,14 @@ const About = () => {
         <div className="space-y-4 text-left">
           <p className="font-body text-sm leading-relaxed text-muted-foreground">
             {t(
-              "Το Galissea βρίσκεται ακριβώς πάνω από την παραλία του Γαλησσά στη Σύρο. Είναι ένας χώρος που συνδυάζει τη χαλαρή ατμόσφαιρα της θάλασσας με γεύσεις που σας ταξιδεύουν.",
-              "Galissea sits right above the sandy beach of Galissas in Syros. A place where the relaxed seaside atmosphere meets flavors that take you on a journey.",
+              "Το Galissea βρίσκεται πάνω από την παραλία του Γαλησσά στη Σύρο και συνδυάζει την ανεπιτήδευτη αίσθηση του νησιού με all-day γεύσεις για καφέ, brunch, snack και ποτό.",
+              "Galissea sits right above Galissas Beach in Syros, pairing the laid-back island atmosphere with all-day flavors for coffee, brunch, snacks and drinks.",
             )}
           </p>
           <p className="font-body text-sm leading-relaxed text-muted-foreground">
             {t(
-              "Από τον πρώτο καφέ της ημέρας μέχρι τα cocktails στο ηλιοβασίλεμα, σας καλωσορίζουμε με επιλεγμένες γεύσεις, προσεγμένες συνταγές και θέα στο Αιγαίο.",
-              "From the first coffee of the day to sunset cocktails, we welcome you with carefully selected flavors, refined recipes, and views over the Aegean.",
+              "Από τον πρώτο καφέ της ημέρας μέχρι τα cocktails στο ηλιοβασίλεμα, σας καλωσορίζουμε με προσεγμένο μενού, χαλαρό ρυθμό και θέα που ανήκει απόλυτα στο καλοκαίρι των Κυκλάδων.",
+              "From the first coffee of the day to sunset cocktails, we welcome you with a carefully curated menu, easygoing rhythm, and views that feel unmistakably Cycladic.",
             )}
           </p>
         </div>

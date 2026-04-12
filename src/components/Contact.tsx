@@ -1,33 +1,41 @@
 import { motion } from "framer-motion";
 import { Clock, Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
+import {
+  BUSINESS_ADDRESS,
+  BUSINESS_EMAIL,
+  BUSINESS_EMAIL_URI,
+  BUSINESS_HOURS,
+  BUSINESS_PHONE_DISPLAY,
+  BUSINESS_PHONE_URI,
+} from "@/config/business";
 import { useLang } from "@/context/LangContext";
 import { resolveMapsConfig } from "@/config/maps";
 import { SOCIAL_LINKS } from "@/config/site";
 
 const Contact = () => {
-  const { t } = useLang();
+  const { lang, t } = useLang();
   const { openUrl } = resolveMapsConfig();
 
   const items = [
     {
       icon: <MapPin size={18} />,
-      label: t("Γαλησσάς, Σύρος", "Galissas, Syros"),
+      label: lang === "el" ? BUSINESS_ADDRESS.displayEl : BUSINESS_ADDRESS.displayEn,
       href: openUrl,
       external: true,
     },
     {
       icon: <Clock size={18} />,
-      label: t("Καθημερινά 09:00 - 22:00", "Daily 09:00 - 22:00"),
+      label: t(BUSINESS_HOURS.displayEl, BUSINESS_HOURS.displayEn),
     },
     {
       icon: <Phone size={18} />,
-      label: "+30 22810 45686",
-      href: "tel:+302281045686",
+      label: BUSINESS_PHONE_DISPLAY,
+      href: BUSINESS_PHONE_URI,
     },
     {
       icon: <Mail size={18} />,
-      label: "galissea.bar@gmail.com",
-      href: "mailto:galissea.bar@gmail.com",
+      label: BUSINESS_EMAIL,
+      href: BUSINESS_EMAIL_URI,
     },
   ];
 
@@ -90,7 +98,7 @@ const Contact = () => {
 
         <div className="mt-6 rounded-2xl border border-border/40 bg-card/45 p-4">
           <h3 className="font-display text-lg font-semibold text-primary">
-            {t("Βρείτε μας στα social", "Social Media")}
+            {t("Βρείτε μας στα social", "Social media")}
           </h3>
           <p className="mt-1 font-body text-xs leading-relaxed text-muted-foreground">
             {t(
