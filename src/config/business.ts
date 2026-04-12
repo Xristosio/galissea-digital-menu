@@ -63,11 +63,11 @@ export const HERO_SUMMARY: Record<Lang, string> = {
 };
 
 export const HOME_META_DESCRIPTION: Record<Lang, string> = {
-  el: "Το Galissea είναι all-day beach cafe, snack bar και cocktail spot στον Γαλησσά Σύρου. Δείτε το μενού, τις ώρες λειτουργίας, τη τοποθεσία και τις αξιολογήσεις Google.",
-  en: "Galissea is an all-day beach cafe, snack bar and cocktail spot in Galissas, Syros. Explore the menu, opening hours, location and Google reviews.",
+  el: "Το Galissea είναι all-day cafe, snack bar και cocktail spot στον Γαλησσά στη Σύρο. Δείτε ολόκληρο το μενού μας με καφέ, φρέσκους χυμούς, cocktails, πρωινό, snacks και άλλα.",
+  en: "Galissea is an all-day cafe, snack bar and cocktail spot in Galissas, Syros. View our full menu with coffee, fresh juices, cocktails, breakfast, snacks, and more.",
 };
 
 export const HOME_META_TITLE: Record<Lang, string> = {
-  el: "Galissea | Beach Cafe, Breakfast & Cocktails στον Γαλησσά Σύρου",
-  en: "Galissea | Beach Cafe, Breakfast & Cocktails in Galissas, Syros",
+  el: "Galissea - Cafe | Snack | Bar στον Γαλησσά, Σύρος",
+  en: "Galissea - Cafe | Snack | Bar in Galissas, Syros",
 };

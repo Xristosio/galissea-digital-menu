@@ -31,6 +31,8 @@ import type { Lang } from "@/i18n/types";
 
 const MAX_ROBOTS_PREVIEW =
   "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1";
+const GOOGLE_SITE_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION?.trim() ?? "";
+const BING_SITE_VERIFICATION = process.env.BING_SITE_VERIFICATION?.trim() ?? "";
 
 export type PageType = "home" | "not-found";
 
@@ -56,6 +58,14 @@ export const PRERENDER_ROUTES = [
 
 export const absoluteUrl = (path: string) =>
   path.startsWith("http") ? path : `${SITE_URL}${path}`;
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
 const resolveHomePage = (lang: Lang): ResolvedPage => {
   const canonicalPath = getLocalePath(lang);
@@ -225,6 +235,19 @@ const getStructuredData = (page: ResolvedPage) => {
         url: primaryImageUrl,
       },
     },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "@id": `${page.canonicalUrl}#breadcrumb`,
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: SITE_NAME,
+          item: page.canonicalUrl,
+        },
+      ],
+    },
   ];
 };
 
@@ -232,6 +255,16 @@ const serializeJsonLd = (value: unknown) =>
   JSON.stringify(value).replace(/</g, "\\u003c");
 
 export const renderHeadTags = (page: ResolvedPage) => {
+  const pageTitle = escapeHtml(page.title);
+  const pageDescription = escapeHtml(page.description);
+  const pageCanonicalUrl = escapeHtml(page.canonicalUrl);
+  const socialImageUrl = escapeHtml(absoluteUrl(SOCIAL_PREVIEW_IMAGE_PATH));
+  const socialImageAlt = escapeHtml(
+    page.lang === "el"
+      ? "Galissea beach cafe στον Γαλησσά Σύρου"
+      : "Galissea beach cafe in Galissas, Syros",
+  );
+
   const alternateLocales = Object.values(OG_LOCALES)
     .filter((locale) => locale !== page.ogLocale)
     .map(
@@ -248,28 +281,37 @@ export const renderHeadTags = (page: ResolvedPage) => {
     .join("\n");
 
   return [
-    `<title>${page.title}</title>`,
-    `<meta name="description" content="${page.description}" />`,
+    `<title>${pageTitle}</title>`,
+    `<meta name="description" content="${pageDescription}" />`,
     `<meta name="robots" content="${page.robots}" />`,
     `<meta name="author" content="${SITE_NAME}" />`,
     `<meta name="application-name" content="${SITE_NAME}" />`,
     `<meta name="apple-mobile-web-app-title" content="${SITE_NAME}" />`,
+    GOOGLE_SITE_VERIFICATION
+      ? `<meta name="google-site-verification" content="${escapeHtml(GOOGLE_SITE_VERIFICATION)}" />`
+      : "",
+    BING_SITE_VERIFICATION
+      ? `<meta name="msvalidate.01" content="${escapeHtml(BING_SITE_VERIFICATION)}" />`
+      : "",
     `<meta property="og:site_name" content="${SITE_NAME}" />`,
     `<meta property="og:type" content="website" />`,
     `<meta property="og:locale" content="${page.ogLocale}" />`,
     alternateLocales,
-    `<meta property="og:title" content="${page.title}" />`,
-    `<meta property="og:description" content="${page.description}" />`,
-    `<meta property="og:url" content="${page.canonicalUrl}" />`,
-    `<meta property="og:image" content="${absoluteUrl(SOCIAL_PREVIEW_IMAGE_PATH)}" />`,
+    `<meta property="og:title" content="${pageTitle}" />`,
+    `<meta property="og:description" content="${pageDescription}" />`,
+    `<meta property="og:url" content="${pageCanonicalUrl}" />`,
+    `<meta property="og:image" content="${socialImageUrl}" />`,
+    `<meta property="og:image:secure_url" content="${socialImageUrl}" />`,
+    `<meta property="og:image:type" content="image/jpeg" />`,
     `<meta property="og:image:width" content="1200" />`,
     `<meta property="og:image:height" content="630" />`,
-    `<meta property="og:image:alt" content="${page.lang === "el" ? "Galissea beach cafe στον Γαλησσά Σύρου" : "Galissea beach cafe in Galissas, Syros"}" />`,
+    `<meta property="og:image:alt" content="${socialImageAlt}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
-    `<meta name="twitter:title" content="${page.title}" />`,
-    `<meta name="twitter:description" content="${page.description}" />`,
-    `<meta name="twitter:image" content="${absoluteUrl(SOCIAL_PREVIEW_IMAGE_PATH)}" />`,
-    `<link rel="canonical" href="${page.canonicalUrl}" />`,
+    `<meta name="twitter:title" content="${pageTitle}" />`,
+    `<meta name="twitter:description" content="${pageDescription}" />`,
+    `<meta name="twitter:image" content="${socialImageUrl}" />`,
+    `<meta name="twitter:image:alt" content="${socialImageAlt}" />`,
+    `<link rel="canonical" href="${pageCanonicalUrl}" />`,
     alternateLinks,
     structuredData,
   ]

@@ -9,6 +9,7 @@
     "build:client": "vite build",
     "build:ssr": "vite build --ssr src/entry-server.tsx --outDir dist/server",
     "build:dev": "vite build --mode development",
+    "indexnow:notify": "node scripts/notify-indexnow.mjs",
     "optimize:gallery-images": "python scripts/optimize_gallery_images.py",
     "lint": "eslint .",
     "preview": "vite preview",
