@@ -15,6 +15,7 @@ export interface MenuItem {
   marker?: "*" | "**";
   extraEl?: string;
   extraEn?: string;
+  badges?: MenuItemBadge[];
 }
 
 export interface MenuSegment {
@@ -40,6 +41,8 @@ export interface MenuFootnote {
   textEl: string;
   textEn: string;
 }
+
+export type MenuItemBadge = "bestSeller" | "vegan" | "new";
 
 type MenuMarker = NonNullable<MenuItem["marker"]>;
 
@@ -481,6 +484,7 @@ export const menuData: MenuCategory[] = [
             descEn: "Cheese · Ham · Bacon · Tomato · Lettuce · Mayonnaise",
             price: "10,00",
             marker: "*",
+            badges: ["vegan"],
           },
           {
             nameEl: "Κοτόπουλο",
@@ -535,6 +539,7 @@ export const menuData: MenuCategory[] = [
               "Black angus burger · Cheddar · Bacon · Tomato · Fried egg · Caramelized onions · BBQ sauce",
             price: "17,00",
             marker: "*",
+            badges: ["bestSeller"],
           },
         ],
       },
@@ -572,6 +577,7 @@ export const menuData: MenuCategory[] = [
               "Κρέμα γάλακτος · Μοσαρέλα · Κοτόπουλο · Μπέικον · Μανιτάρια",
             descEn: "Milk cream · Mozzarella · Chicken · Bacon · Mushrooms",
             price: "15,00",
+            badges: ["bestSeller", "new", "vegan"],
           },
         ],
       },
@@ -597,6 +603,7 @@ export const menuData: MenuCategory[] = [
             descEn:
               "Chicken fillet · Parmesan · Iceberg · Lola lettuce · Crouton · Corn · Sauce caesar",
             price: "12,00",
+            badges: ["bestSeller"],
           },
           {
             nameEl: "Ιταλική",

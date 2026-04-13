@@ -17,12 +17,12 @@ export const FOOTER_FAQ_ITEMS: FooterFaqItem[] = [
   {
     id: "parking",
     question: {
-      el: "Parking",
+      el: "Πάρκινγκ",
       en: "Parking",
     },
     answer: {
-      el: "Οι διαθέσιμες επιλογές στάθμευσης στην περιοχή μπορεί να διαφέρουν. Για την πιο πρακτική πρόσβαση, επικοινωνήστε μαζί μας πριν έρθετε.",
-      en: "Parking options nearby may vary. For the easiest access, please contact us before your visit.",
+      el: "Ακριβώς απέναντι από το Galissea υπάρχει άπλετος δημόσιος χώρος στάθμευσης.",
+      en: "There is a public parking lot right next to Galissea.",
     },
   },
   {
@@ -32,8 +32,8 @@ export const FOOTER_FAQ_ITEMS: FooterFaqItem[] = [
       en: "Reservations",
     },
     answer: {
-      el: "Παρακαλούμε επικοινωνήστε μαζί μας απευθείας για να επιβεβαιώσετε αν είναι διαθέσιμες κρατήσεις.",
-      en: "Please contact us directly to confirm whether reservations are available.",
+      el: "Παρακαλούμε επικοινωνήστε μαζί μας απευθείας στο τηλέφωνο 2281045686 για να σας κάνουμε κράτηση.",
+      en: "Please contact us directly at 2281045686 to make a reservation.",
     },
   },
   {
@@ -43,8 +43,8 @@ export const FOOTER_FAQ_ITEMS: FooterFaqItem[] = [
       en: "Vegan options",
     },
     answer: {
-      el: "Οι διαθέσιμες vegan επιλογές μπορεί να αλλάζουν ανάλογα με το μενού. Ρωτήστε την ομάδα μας για τις τρέχουσες επιλογές.",
-      en: "Vegan-friendly choices may change with the menu. Ask our team about the current options.",
+      el: "Υπάρχουν διαθέσιμες vegan επιλογές και μπορείτε να τις δείτε στις επιλογές με το χαρακτηριστικό σύμβολο στο μενού μας.",
+      en: "Vegan-friendly choices are available and can be identified by the corresponding badge on our menu.",
     },
   },
   {
@@ -53,17 +53,9 @@ export const FOOTER_FAQ_ITEMS: FooterFaqItem[] = [
       el: "Κατοικίδια",
       en: "Pets allowed",
     },
-    answer: CONTACT_FALLBACK,
-  },
-  {
-    id: "sea-view",
-    question: {
-      el: "Θέα στη θάλασσα",
-      en: "Sea view",
-    },
     answer: {
-      el: "Το Galissea βρίσκεται στον Γαλησσά της Σύρου, δίπλα στη θάλασσα. Για τη διαθεσιμότητα θέσεων με τη θέα που προτιμάτε, επικοινωνήστε μαζί μας.",
-      en: "Galissea is in Galissas, Syros, right by the sea. For seating availability with your preferred view, please contact us.",
+      el: "Τα κατοικίδια είναι ευπρόσδεκτα στο Galissea.",
+      en: "Pets are welcome at Galissea.",
     },
   },
   {
@@ -73,8 +65,8 @@ export const FOOTER_FAQ_ITEMS: FooterFaqItem[] = [
       en: "Take-away",
     },
     answer: {
-      el: "Παρακαλούμε επικοινωνήστε μαζί μας για να επιβεβαιώσετε τη διαθεσιμότητα take-away για ό,τι θέλετε να παραγγείλετε.",
-      en: "Please contact us to confirm take-away availability for the items you would like to order.",
+      el: "Το take-away είναι διαθέσιμο για ορισμένα είδη, αλλά παρακαλούμε επικοινωνήστε μαζί μας για να επιβεβαιώσετε τη διαθεσιμότητα για τα είδη που θα θέλατε να παραγγείλετε.",
+      en: "Take-away is available for certain items, but please contact us to confirm availability for the items you would like to order.",
     },
   },
   {
@@ -84,8 +76,8 @@ export const FOOTER_FAQ_ITEMS: FooterFaqItem[] = [
       en: "Breakfast kitchen hours",
     },
     answer: {
-      el: "Οι ώρες της κουζίνας για το πρωινό μπορεί να διαφέρουν ανάλογα με την ημέρα και την περίοδο. Επικοινωνήστε μαζί μας για το τρέχον ωράριο.",
-      en: "Breakfast kitchen hours may vary by day and season. Please contact us for the current schedule.",
+      el: "Οι ώρες της κουζίνας για το πρωινό είναι μέχρι τη 13:00 το μεσημέρι.",
+      en: "Breakfast kitchen hours are until 13:00.",
     },
   },
 ];

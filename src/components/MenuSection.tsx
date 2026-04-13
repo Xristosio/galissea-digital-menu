@@ -6,7 +6,7 @@ import {
   useInView,
   useReducedMotion,
 } from "framer-motion";
-import { Search, X } from "lucide-react";
+import { Leaf, Search, Sparkles, Star, X } from "lucide-react";
 import { useLang } from "@/context/LangContext";
 import {
   getCategoryGeneralFootnotes,
@@ -15,6 +15,7 @@ import {
   getCategorySegments,
   menuData,
   type MenuCategory,
+  type MenuItemBadge,
   type MenuFootnote,
   type MenuItem,
   type MenuSegment,
@@ -63,6 +64,7 @@ const getItemSearchTerms = (item: MenuItem) =>
     item.marker ?? "",
     item.extraEl ?? "",
     item.extraEn ?? "",
+    ...(item.badges ?? []),
     item.price,
   ]
     .map(normalizeSearchValue)
@@ -315,11 +317,18 @@ const MenuSection = () => {
     };
   }, [isSearchActive]);
 
+  const badgeLabels: Record<MenuItemBadge, string> = {
+    bestSeller: t("Best Seller", "Best Seller"),
+    vegan: t("Vegan", "Vegan"),
+    new: t("New", "New"),
+  };
+
   const renderMenuItem = (item: MenuItem, key: string, delay: number) => {
     const name = lang === "el" ? item.nameEl : item.nameEn;
     const marker = item.marker ?? "";
     const description = lang === "el" ? item.descEl : item.descEn;
     const extra = lang === "el" ? item.extraEl : item.extraEn;
+    const badges = item.badges ?? [];
 
     return (
       <motion.div
@@ -330,14 +339,48 @@ const MenuSection = () => {
         className="flex items-start justify-between px-4 py-3.5"
       >
         <div className="min-w-0 flex-1 pr-4">
-          <span className="block font-body text-[15px] font-medium leading-tight text-foreground">
-            {name}
-            {marker && (
-              <sup className="ml-1 align-super font-body text-[10px] font-semibold text-accent">
-                {marker}
-              </sup>
-            )}
-          </span>
+          <div className="flex flex-wrap items-start gap-1.5">
+            <span className="font-body text-[15px] font-medium leading-tight text-foreground">
+              {name}
+              {marker && (
+                <sup className="ml-1 align-super font-body text-[10px] font-semibold text-accent">
+                  {marker}
+                </sup>
+              )}
+            </span>
+
+            {badges.map((badge) => {
+              const badgeStyles =
+                badge === "vegan"
+                  ? {
+                      Icon: Leaf,
+                      className: "border-accent/25 bg-accent/10 text-accent",
+                    }
+                  : badge === "new"
+                    ? {
+                        Icon: Sparkles,
+                        className:
+                          "border-primary/15 bg-primary/5 text-primary/85",
+                      }
+                    : {
+                        Icon: Star,
+                        className:
+                          "border-primary/20 bg-primary/10 text-primary",
+                      };
+              const { Icon, className } = badgeStyles;
+
+              return (
+                <span
+                  key={`${key}-${badge}`}
+                  className={`inline-flex min-h-5 items-center gap-1 rounded-full border px-2 py-0.5 font-body text-[10px] font-semibold leading-none ${className}`}
+                >
+                  <Icon size={10} aria-hidden="true" />
+                  <span>{badgeLabels[badge]}</span>
+                </span>
+              );
+            })}
+          </div>
+
           {description && (
             <p className="mt-0.5 font-body text-[11px] leading-snug text-muted-foreground">
               {description}
