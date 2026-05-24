@@ -6,7 +6,7 @@ import {
   useInView,
   useReducedMotion,
 } from "framer-motion";
-import { Leaf, Search, Sparkles, Star, X } from "lucide-react";
+import { Clock, Leaf, Search, Sparkles, Star, X } from "lucide-react";
 import { useLang } from "@/context/LangContext";
 import {
   getCategoryGeneralFootnotes,
@@ -50,7 +50,16 @@ const getLastCardSpan = (itemCount: number, columnCount: number) => {
 };
 
 const getCategorySearchTerms = (category: MenuCategory) =>
-  [category.nameEl, category.nameEn].map(normalizeSearchValue).join(" ");
+  [
+    category.nameEl,
+    category.nameEn,
+    category.serviceHours?.textEl ?? "",
+    category.serviceHours?.textEn ?? "",
+    category.serviceHours?.compactEl ?? "",
+    category.serviceHours?.compactEn ?? "",
+  ]
+    .map(normalizeSearchValue)
+    .join(" ");
 
 const getSegmentSearchTerms = (segment: MenuSegment) =>
   [segment.titleEl, segment.titleEn].map(normalizeSearchValue).join(" ");
@@ -106,6 +115,12 @@ const MenuSection = () => {
     [activeCat],
   );
   const activeHasStructuredSegments = Boolean(activeCat?.segments?.length);
+  const activeServiceHours =
+    activeCat && activeCat.serviceHours
+      ? lang === "el"
+        ? activeCat.serviceHours.textEl
+        : activeCat.serviceHours.textEn
+      : null;
 
   const normalizedQuery = useMemo(
     () => normalizeSearchValue(searchQuery),
@@ -589,6 +604,16 @@ const MenuSection = () => {
                 <span className="mt-0.5 block font-body text-[10px] text-white/70 lg:text-[11px]">
                   {getCategoryItemsCount(category)} {t("προϊόντα", "items")}
                 </span>
+                {category.serviceHours && (
+                  <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-white/12 px-2 py-0.5 font-body text-[10px] font-medium text-white/85 ring-1 ring-white/15 backdrop-blur-sm">
+                    <Clock size={10} aria-hidden="true" />
+                    {lang === "el"
+                      ? (category.serviceHours.compactEl ??
+                        category.serviceHours.textEl)
+                      : (category.serviceHours.compactEn ??
+                        category.serviceHours.textEn)}
+                  </span>
+                )}
               </div>
             </motion.button>
           ))}
@@ -723,9 +748,17 @@ const MenuSection = () => {
                     className="h-10 w-10 rounded-xl object-cover"
                     loading="lazy"
                   />
-                  <h3 className="font-display text-lg font-bold text-primary">
-                    {lang === "el" ? activeCat.nameEl : activeCat.nameEn}
-                  </h3>
+                  <div className="min-w-0">
+                    <h3 className="font-display text-lg font-bold leading-tight text-primary">
+                      {lang === "el" ? activeCat.nameEl : activeCat.nameEn}
+                    </h3>
+                    {activeServiceHours && (
+                      <div className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-accent/20 bg-accent/10 px-2.5 py-1 font-body text-[11px] font-medium leading-none text-accent">
+                        <Clock size={12} aria-hidden="true" />
+                        <span>{activeServiceHours}</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <button
                   type="button"

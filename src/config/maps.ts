@@ -1,11 +1,11 @@
-export const DEFAULT_OPEN_MAPS_URL = "https://maps.google.com/?q=Galissea+Galissas+Syros";
+export const DEFAULT_OPEN_MAPS_URL =
+  "https://maps.google.com/?q=Galissea+Galissas+Syros";
 export const DEFAULT_EMBED_MAPS_URL =
   "https://www.google.com/maps?q=Galissea%20Galissas%20Syros&output=embed";
 export const DEFAULT_GOOGLE_PLACE_ID = "ChIJMdffDT59ohQRcaoqm2WCgus";
-export const DEFAULT_WRITE_REVIEW_URL =
-  `https://search.google.com/local/writereview?placeid=${DEFAULT_GOOGLE_PLACE_ID}`;
+export const DEFAULT_WRITE_REVIEW_URL = `https://search.google.com/local/writereview?placeid=${DEFAULT_GOOGLE_PLACE_ID}`;
 export const DEFAULT_RATING_VALUE = "4.7";
-export const DEFAULT_RATING_COUNT = "48";
+export const DEFAULT_RATING_COUNT = "49";
 
 type MapsEnv = {
   VITE_GOOGLE_MAPS_EMBED_URL?: string;
@@ -31,17 +31,21 @@ export type MapsConfig = {
 const normalizeValue = (value: string | undefined) => value?.trim() ?? "";
 
 export const resolveMapsConfig = (
-  env: MapsEnv = import.meta.env as unknown as MapsEnv
+  env: MapsEnv = import.meta.env as unknown as MapsEnv,
 ): MapsConfig => {
   const directEmbedUrl = normalizeValue(env.VITE_GOOGLE_MAPS_EMBED_URL);
   const apiKey = normalizeValue(env.VITE_GOOGLE_MAPS_API_KEY);
   const placeQuery = normalizeValue(env.VITE_GOOGLE_MAPS_PLACE_QUERY);
-  const openUrl = normalizeValue(env.VITE_GOOGLE_MAPS_OPEN_URL) || DEFAULT_OPEN_MAPS_URL;
+  const openUrl =
+    normalizeValue(env.VITE_GOOGLE_MAPS_OPEN_URL) || DEFAULT_OPEN_MAPS_URL;
   const reviewsUrl = normalizeValue(env.VITE_GOOGLE_REVIEWS_URL) || openUrl;
   const writeReviewUrl =
-    normalizeValue(env.VITE_GOOGLE_WRITE_REVIEW_URL) || DEFAULT_WRITE_REVIEW_URL;
-  const ratingValue = normalizeValue(env.VITE_GOOGLE_RATING_VALUE) || DEFAULT_RATING_VALUE;
-  const ratingCount = normalizeValue(env.VITE_GOOGLE_RATING_COUNT) || DEFAULT_RATING_COUNT;
+    normalizeValue(env.VITE_GOOGLE_WRITE_REVIEW_URL) ||
+    DEFAULT_WRITE_REVIEW_URL;
+  const ratingValue =
+    normalizeValue(env.VITE_GOOGLE_RATING_VALUE) || DEFAULT_RATING_VALUE;
+  const ratingCount =
+    normalizeValue(env.VITE_GOOGLE_RATING_COUNT) || DEFAULT_RATING_COUNT;
 
   if (directEmbedUrl) {
     return {

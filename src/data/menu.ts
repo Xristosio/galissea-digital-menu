@@ -30,10 +30,18 @@ export interface MenuCategory {
   nameEl: string;
   nameEn: string;
   image: string;
+  serviceHours?: MenuServiceHours;
   items?: MenuItem[];
   segments?: MenuSegment[];
   // Optional category-level product notes shown before general notes.
   footnotes?: MenuFootnote[];
+}
+
+export interface MenuServiceHours {
+  textEl: string;
+  textEn: string;
+  compactEl?: string;
+  compactEn?: string;
 }
 
 export interface MenuFootnote {
@@ -251,6 +259,12 @@ export const menuData: MenuCategory[] = [
     nameEl: "Πρωινό",
     nameEn: "Breakfast",
     image: breakfastImg,
+    serviceHours: {
+      textEl: "Σερβίρεται 09:00-11:30",
+      textEn: "Served 09:00-11:30",
+      compactEl: "09:00-11:30",
+      compactEn: "09:00-11:30",
+    },
     segments: [
       {
         id: "eggs",
