@@ -6,7 +6,7 @@ import {
   useInView,
   useReducedMotion,
 } from "framer-motion";
-import { Clock, Leaf, Search, Sparkles, Star, X } from "lucide-react";
+import { Clock, Leaf, Search, Sparkles, Sprout, Star, X } from "lucide-react";
 import { useLang } from "@/context/LangContext";
 import {
   getCategoryGeneralFootnotes,
@@ -57,12 +57,30 @@ const getCategorySearchTerms = (category: MenuCategory) =>
     category.serviceHours?.textEn ?? "",
     category.serviceHours?.compactEl ?? "",
     category.serviceHours?.compactEn ?? "",
+    category.optionBuilder?.baseNameEl ?? "",
+    category.optionBuilder?.baseNameEn ?? "",
+    category.optionBuilder?.helperEl ?? "",
+    category.optionBuilder?.helperEn ?? "",
   ]
     .map(normalizeSearchValue)
     .join(" ");
 
 const getSegmentSearchTerms = (segment: MenuSegment) =>
-  [segment.titleEl, segment.titleEn].map(normalizeSearchValue).join(" ");
+  [
+    segment.titleEl,
+    segment.titleEn,
+    segment.optionGroupEl ?? "",
+    segment.optionGroupEn ?? "",
+  ]
+    .map(normalizeSearchValue)
+    .join(" ");
+
+const badgeSearchTerms: Record<MenuItemBadge, string[]> = {
+  bestSeller: ["Best Seller"],
+  vegan: ["Vegan"],
+  vegetarian: ["Χορτοφαγικό", "Vegetarian"],
+  new: ["Νέο", "New"],
+};
 
 const getItemSearchTerms = (item: MenuItem) =>
   [
@@ -73,7 +91,10 @@ const getItemSearchTerms = (item: MenuItem) =>
     item.marker ?? "",
     item.extraEl ?? "",
     item.extraEn ?? "",
-    ...(item.badges ?? []),
+    ...(item.badges ?? []).flatMap((badge) => [
+      badge,
+      ...badgeSearchTerms[badge],
+    ]),
     item.price,
   ]
     .map(normalizeSearchValue)
@@ -90,9 +111,9 @@ const MenuSection = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [hasCategoryCardsEntered, setHasCategoryCardsEntered] = useState(false);
   const [categoryGridColumns, setCategoryGridColumns] = useState(2);
-  const [categoryCardBaseHeight, setCategoryCardBaseHeight] = useState<number | null>(
-    null,
-  );
+  const [categoryCardBaseHeight, setCategoryCardBaseHeight] = useState<
+    number | null
+  >(null);
   const reduceMotion = useReducedMotion();
   const scrollBehavior: ScrollBehavior = reduceMotion ? "auto" : "smooth";
   const categoryGridInView = useInView(categoryGridRef, {
@@ -335,6 +356,7 @@ const MenuSection = () => {
   const badgeLabels: Record<MenuItemBadge, string> = {
     bestSeller: t("Best Seller", "Best Seller"),
     vegan: t("Vegan", "Vegan"),
+    vegetarian: t("Vegetarian", "Vegetarian"),
     new: t("New", "New"),
   };
 
@@ -371,17 +393,23 @@ const MenuSection = () => {
                       Icon: Leaf,
                       className: "border-accent/25 bg-accent/10 text-accent",
                     }
-                  : badge === "new"
+                  : badge === "vegetarian"
                     ? {
-                        Icon: Sparkles,
+                        Icon: Sprout,
                         className:
-                          "border-primary/15 bg-primary/5 text-primary/85",
+                          "border-emerald-500/20 bg-emerald-500/10 text-emerald-700",
                       }
-                    : {
-                        Icon: Star,
-                        className:
-                          "border-primary/20 bg-primary/10 text-primary",
-                      };
+                    : badge === "new"
+                      ? {
+                          Icon: Sparkles,
+                          className:
+                            "border-primary/15 bg-primary/5 text-primary/85",
+                        }
+                      : {
+                          Icon: Star,
+                          className:
+                            "border-primary/20 bg-primary/10 text-primary",
+                        };
               const { Icon, className } = badgeStyles;
 
               return (
@@ -411,6 +439,52 @@ const MenuSection = () => {
           {item.price}&euro;
         </span>
       </motion.div>
+    );
+  };
+
+  const renderOptionItem = (item: MenuItem, key: string, delay: number) => {
+    const name = lang === "el" ? item.nameEl : item.nameEn;
+    const description = lang === "el" ? item.descEl : item.descEn;
+
+    return (
+      <motion.div
+        key={key}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay }}
+        className="flex items-start justify-between gap-3 rounded-xl bg-background/45 px-3 py-2.5"
+      >
+        <div className="min-w-0">
+          <span className="block font-body text-[13px] font-medium leading-tight text-foreground">
+            {name}
+          </span>
+          {description && (
+            <span className="mt-0.5 block font-body text-[10px] leading-snug text-muted-foreground">
+              {description}
+            </span>
+          )}
+        </div>
+        <span className="whitespace-nowrap font-body text-xs font-bold tabular-nums text-primary">
+          +{item.price}&euro;
+        </span>
+      </motion.div>
+    );
+  };
+
+  const renderOptionGroupHeader = (segment: MenuSegment) => {
+    const title = lang === "el" ? segment.optionGroupEl : segment.optionGroupEn;
+    if (!title) return null;
+
+    return (
+      <div className="bg-background px-4 py-3">
+        <div className="flex items-center gap-2">
+          <span className="h-px flex-1 bg-border/50" />
+          <span className="rounded-full border border-primary/15 bg-primary/5 px-3 py-1 font-body text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/85">
+            {title}
+          </span>
+          <span className="h-px flex-1 bg-border/50" />
+        </div>
+      </div>
     );
   };
 
@@ -552,7 +626,10 @@ const MenuSection = () => {
                   ? {
                       gridColumn: `span ${lastCardSpan} / span ${lastCardSpan}`,
                       ...(categoryCardBaseHeight
-                        ? { height: `${categoryCardBaseHeight}px`, aspectRatio: "auto" }
+                        ? {
+                            height: `${categoryCardBaseHeight}px`,
+                            aspectRatio: "auto",
+                          }
                         : {}),
                     }
                   : undefined
@@ -690,6 +767,17 @@ const MenuSection = () => {
                       <Fragment
                         key={`search-segment-${category.id}-${segment.id}`}
                       >
+                        {segment.display === "options" &&
+                          (lang === "el"
+                            ? segment.optionGroupEl
+                            : segment.optionGroupEn) !==
+                            (lang === "el"
+                              ? category.segments[segmentIndex - 1]
+                                  ?.optionGroupEl
+                              : category.segments[segmentIndex - 1]
+                                  ?.optionGroupEn) &&
+                          renderOptionGroupHeader(segment)}
+
                         {category.hasStructuredSegments && (
                           <div className="bg-muted/25 px-4 py-2">
                             <h4 className="font-body text-[11px] font-semibold tracking-[0.14em] text-muted-foreground">
@@ -700,12 +788,30 @@ const MenuSection = () => {
                           </div>
                         )}
 
-                        {segment.items.map((item, index) =>
-                          renderMenuItem(
-                            item,
-                            `${category.id}-${segment.id}-${index}-${item.price}`,
-                            Math.min(segmentIndex * 0.05 + index * 0.02, 0.22),
-                          ),
+                        {segment.display === "options" ? (
+                          <div className="grid gap-2 bg-muted/10 px-3 py-3 sm:grid-cols-2">
+                            {segment.items.map((item, index) =>
+                              renderOptionItem(
+                                item,
+                                `${category.id}-${segment.id}-${index}-${item.price}`,
+                                Math.min(
+                                  segmentIndex * 0.04 + index * 0.018,
+                                  0.18,
+                                ),
+                              ),
+                            )}
+                          </div>
+                        ) : (
+                          segment.items.map((item, index) =>
+                            renderMenuItem(
+                              item,
+                              `${category.id}-${segment.id}-${index}-${item.price}`,
+                              Math.min(
+                                segmentIndex * 0.05 + index * 0.02,
+                                0.22,
+                              ),
+                            ),
+                          )
                         )}
                       </Fragment>
                     ))}
@@ -770,9 +876,43 @@ const MenuSection = () => {
                 </button>
               </div>
 
+              {activeCat.optionBuilder && (
+                <div className="mb-3 rounded-2xl border border-accent/15 bg-accent/5 px-4 py-3">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="font-body text-[10px] font-semibold uppercase tracking-[0.14em] text-accent">
+                        {t("Βάση", "Base")}
+                      </p>
+                      <h4 className="mt-1 font-display text-base font-semibold leading-tight text-primary">
+                        {lang === "el"
+                          ? activeCat.optionBuilder.baseNameEl
+                          : activeCat.optionBuilder.baseNameEn}
+                      </h4>
+                    </div>
+                    <span className="whitespace-nowrap pt-1 font-body text-sm font-bold tabular-nums text-primary">
+                      {activeCat.optionBuilder.basePrice}&euro;
+                    </span>
+                  </div>
+                  <p className="mt-2 font-body text-[11px] leading-snug text-muted-foreground">
+                    {lang === "el"
+                      ? activeCat.optionBuilder.helperEl
+                      : activeCat.optionBuilder.helperEn}
+                  </p>
+                </div>
+              )}
+
               <div className="overflow-hidden rounded-2xl bg-card/50 divide-y divide-border/30">
                 {activeSegments.map((segment, segmentIndex) => (
                   <Fragment key={`active-segment-${segment.id}`}>
+                    {segment.display === "options" &&
+                      (lang === "el"
+                        ? segment.optionGroupEl
+                        : segment.optionGroupEn) !==
+                        (lang === "el"
+                          ? activeSegments[segmentIndex - 1]?.optionGroupEl
+                          : activeSegments[segmentIndex - 1]?.optionGroupEn) &&
+                      renderOptionGroupHeader(segment)}
+
                     {activeHasStructuredSegments && (
                       <div className="bg-muted/25 px-4 py-2.5">
                         <h4 className="font-body text-[11px] font-semibold tracking-[0.16em] text-muted-foreground">
@@ -781,12 +921,24 @@ const MenuSection = () => {
                       </div>
                     )}
 
-                    {segment.items.map((item, index) =>
-                      renderMenuItem(
-                        item,
-                        `${segment.id}-${index}-${item.price}`,
-                        Math.min(segmentIndex * 0.05 + index * 0.03, 0.24),
-                      ),
+                    {segment.display === "options" ? (
+                      <div className="grid gap-2 bg-muted/10 px-3 py-3 sm:grid-cols-2">
+                        {segment.items.map((item, index) =>
+                          renderOptionItem(
+                            item,
+                            `${segment.id}-${index}-${item.price}`,
+                            Math.min(segmentIndex * 0.04 + index * 0.018, 0.18),
+                          ),
+                        )}
+                      </div>
+                    ) : (
+                      segment.items.map((item, index) =>
+                        renderMenuItem(
+                          item,
+                          `${segment.id}-${index}-${item.price}`,
+                          Math.min(segmentIndex * 0.05 + index * 0.03, 0.24),
+                        ),
+                      )
                     )}
                   </Fragment>
                 ))}
