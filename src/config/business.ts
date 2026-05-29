@@ -34,9 +34,9 @@ export const BUSINESS_ADDRESS = {
 
 export const BUSINESS_HOURS = {
   opens: "09:00",
-  closes: "22:00",
-  displayEl: "Καθημερινά 09:00 - 22:00",
-  displayEn: "Daily 09:00 - 22:00",
+  closes: "00:00",
+  displayEl: "Καθημερινά 09:00 - 00:00",
+  displayEn: "Daily 09:00 - 00:00",
 } as const;
 
 export const BUSINESS_SAME_AS = [
