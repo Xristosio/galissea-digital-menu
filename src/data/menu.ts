@@ -198,8 +198,10 @@ export const menuData: MenuCategory[] = [
             nameEl: "Σοκολάτα",
             nameEn: "Chocolate",
             price: "5,00",
-            extraEl: "Διάφορες γεύσεις 6,00€",
-            extraEn: "Various flavors 6,00€",
+            extraEl:
+              "Διάφορες γεύσεις 6,00€ Λευκή · Καραμέλα · Μπουένο · Lila pause",
+            extraEn:
+              "Various flavors 6,00€ White · Caramel · Bueno · Lila pause",
           },
         ],
       },
@@ -521,7 +523,7 @@ export const menuData: MenuCategory[] = [
             nameEl: "Κοτομπουκιές",
             nameEn: "Chicken nuggets",
             price: "10,00",
-            marker: "**",
+            marker: "*",
             extraEl: "Extra Dip +0.60€",
             extraEn: "Extra Dip +0.60€",
           },
@@ -890,8 +892,8 @@ export const menuData: MenuCategory[] = [
       },
       {
         id: "kayak-ice-cream",
-        titleEl: "Παγωτά KAYAK",
-        titleEn: "KAYAK Ice cream",
+        titleEl: "Παγωτά KAYAK · 1 μπάλα 3,50€ · 2 μπάλες 6,00€",
+        titleEn: "KAYAK Ice cream · 1 scoop 3,50€ · 2 scoops 6,00€",
         items: [
           { nameEl: "Βανίλια", nameEn: "Vanilla", price: "3,50" },
           { nameEl: "Σοκολάτα", nameEn: "Chocolate", price: "3,50" },
