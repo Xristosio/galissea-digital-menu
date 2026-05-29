@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useLang } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 
 const About = () => {
   const { t } = useLang();

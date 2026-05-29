@@ -6,7 +6,7 @@ import {
   BUSINESS_HOURS,
   HERO_SUMMARY,
 } from "@/config/business";
-import { useLang } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 
 const Hero = () => {
   const { lang, t } = useLang();

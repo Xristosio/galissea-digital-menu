@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useLang } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 import { galleryData, type GalleryImage } from "@/data/gallery";
 
 const MAIN_IMAGE_COUNT = 3;

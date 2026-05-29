@@ -8,7 +8,7 @@ import {
   BUSINESS_PHONE_DISPLAY,
   BUSINESS_PHONE_URI,
 } from "@/config/business";
-import { useLang } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 import { resolveMapsConfig } from "@/config/maps";
 import { SOCIAL_LINKS } from "@/config/site";
 

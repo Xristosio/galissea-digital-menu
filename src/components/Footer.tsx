@@ -12,7 +12,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { FOOTER_FAQ_ITEMS } from "@/data/footerFaq";
-import { useLang } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 
 const Footer = () => {
   const { lang, t } = useLang();

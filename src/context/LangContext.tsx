@@ -1,21 +1,8 @@
-import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import type { Lang } from "@/i18n/types";
-
-interface LangContextType {
-  lang: Lang;
-  setLang: (l: Lang) => void;
-  t: (el: string, en: string) => string;
-}
+import { LangContext } from "@/context/lang-context-core";
 
 const LANG_STORAGE_KEY = "galissea-lang";
-
-const LangContext = createContext<LangContextType>({
-  lang: "el",
-  setLang: () => {},
-  t: (el) => el,
-});
-
-export const useLang = () => useContext(LangContext);
 
 export const LangProvider = ({
   children,

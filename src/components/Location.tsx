@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { ExternalLink, MapPin } from "lucide-react";
 import { BUSINESS_ADDRESS } from "@/config/business";
-import { useLang } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 import { resolveMapsConfig } from "@/config/maps";
 
 const Location = () => {

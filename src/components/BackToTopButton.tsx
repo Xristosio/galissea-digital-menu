@@ -1,7 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ArrowUp } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useLang } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 
 const SHOW_AFTER_PX = 420;
 

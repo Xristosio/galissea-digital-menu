@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ExternalLink, Star } from "lucide-react";
-import { useLang } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 import { cn } from "@/lib/utils";
 import { resolveMapsConfig } from "@/config/maps";
 

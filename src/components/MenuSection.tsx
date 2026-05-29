@@ -7,7 +7,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { Clock, Leaf, Search, Sparkles, Sprout, Star, X } from "lucide-react";
-import { useLang } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 import {
   getCategoryGeneralFootnotes,
   getCategoryItemsCount,

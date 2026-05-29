@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { QrCode, Share2 } from "lucide-react";
 import { useState } from "react";
-import { useLang } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 import { MENU_QR_IMAGE_PATH } from "@/config/site";
 
 const QrShareSection = () => {

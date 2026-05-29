@@ -9,7 +9,8 @@ import Reviews from "@/components/Reviews";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 import BackToTopButton from "@/components/BackToTopButton";
-import { LangProvider, useLang } from "@/context/LangContext";
+import { LangProvider } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 import type { Lang } from "@/i18n/types";
 
 const IndexContent = () => {

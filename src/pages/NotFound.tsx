@@ -1,7 +1,5 @@
-import {
-  LangProvider,
-  useLang,
-} from "@/context/LangContext";
+import { LangProvider } from "@/context/LangContext";
+import { useLang } from "@/context/lang-context-core";
 import { getLocalePath } from "@/i18n/routing";
 import type { Lang } from "@/i18n/types";
 
