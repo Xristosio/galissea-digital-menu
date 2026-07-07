@@ -12,6 +12,8 @@ const MAIN_SECONDARY_SIZES =
 const STRIP_SIZES = "(max-width: 640px) 9.5rem, 11rem";
 const LIGHTBOX_SIZES =
   "(max-width: 640px) 92vw, (max-width: 1024px) 86vw, 72vw";
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 const Gallery = () => {
   const { lang, t } = useLang();
@@ -19,7 +21,9 @@ const Gallery = () => {
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   const [activeImage, setActiveImage] = useState<GalleryImage | null>(null);
   const galleryRef = useRef<HTMLElement>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const triggerButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const primaryImages = galleryData.slice(0, MAIN_IMAGE_COUNT);
   const remainingImages = galleryData.slice(MAIN_IMAGE_COUNT);
@@ -62,14 +66,22 @@ const Gallery = () => {
     });
   }, []);
 
-  const openLightbox = (image: GalleryImage, trigger?: HTMLButtonElement) => {
-    trigger?.blur();
+  const openLightbox = useCallback((image: GalleryImage, trigger?: HTMLButtonElement) => {
+    triggerButtonRef.current = trigger ?? null;
     setActiveImage(image);
-  };
+  }, []);
 
-  const closeLightbox = () => {
+  const closeLightbox = useCallback(() => {
     setActiveImage(null);
-  };
+    const trigger = triggerButtonRef.current;
+    triggerButtonRef.current = null;
+
+    window.requestAnimationFrame(() => {
+      if (trigger?.isConnected) {
+        trigger.focus();
+      }
+    });
+  }, []);
 
   useEffect(() => {
     revealCompletedImages();
@@ -79,9 +91,47 @@ const Gallery = () => {
     if (!activeImage) return;
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      event.preventDefault();
-      closeLightbox();
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeLightbox();
+        return;
+      }
+
+      if (event.key !== "Tab") return;
+
+      const lightbox = lightboxRef.current;
+      if (!lightbox) return;
+
+      const focusableElements = Array.from(
+        lightbox.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+      ).filter((element) => element.offsetParent !== null);
+
+      if (!focusableElements.length) {
+        event.preventDefault();
+        closeButtonRef.current?.focus();
+        return;
+      }
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      const activeElement = document.activeElement;
+
+      if (!lightbox.contains(activeElement)) {
+        event.preventDefault();
+        firstElement.focus();
+        return;
+      }
+
+      if (event.shiftKey && activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+        return;
+      }
+
+      if (!event.shiftKey && activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
     };
 
     window.addEventListener("keydown", onKeyDown);
@@ -93,7 +143,7 @@ const Gallery = () => {
       window.removeEventListener("keydown", onKeyDown);
       window.cancelAnimationFrame(rafId);
     };
-  }, [activeImage]);
+  }, [activeImage, closeLightbox]);
 
   useEffect(() => {
     if (!activeImage) return;
@@ -278,6 +328,7 @@ const Gallery = () => {
       <AnimatePresence>
         {activeImage && (
           <motion.div
+            ref={lightboxRef}
             role="dialog"
             aria-modal="true"
             aria-label={t("Μεγέθυνση εικόνας", "Image preview")}

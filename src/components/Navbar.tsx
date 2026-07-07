@@ -1,7 +1,6 @@
 import { useReducedMotion } from "framer-motion";
 import { Instagram, MapPin, Phone } from "lucide-react";
-import type { MouseEvent } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState, type MouseEvent } from "react";
 import {
   BUSINESS_PHONE_URI,
 } from "@/config/business";
@@ -14,10 +13,18 @@ const SCROLL_OFFSET = 12;
 
 const Navbar = () => {
   const { lang, t } = useLang();
-  const location = useLocation();
   const reduceMotion = useReducedMotion();
-  const currentHash = location.hash || "";
-  const localeHref = (targetLang: Lang) => getLocalePath(targetLang, currentHash);
+  const [browserHash, setBrowserHash] = useState("");
+  const localeHref = (targetLang: Lang) => getLocalePath(targetLang, browserHash);
+
+  useEffect(() => {
+    const syncHash = () => setBrowserHash(window.location.hash || "");
+
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, []);
 
   const handleLocationClick = (event: MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();

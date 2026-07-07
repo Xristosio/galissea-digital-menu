@@ -64,6 +64,12 @@ const requiredSchemaTypes = [
   "WebPage",
   "BreadcrumbList",
 ];
+const expectedSocialImageUrl = `${INDEXNOW_SITE_URL}/galissea-og.png`;
+const expectedSocialImage = {
+  type: "image/png",
+  width: "1731",
+  height: "909",
+};
 
 const readText = async (file) => fs.readFile(path.join(distDir, file), "utf8");
 
@@ -230,6 +236,10 @@ for (const check of pageChecks) {
     ?.getAttribute("content")
     ?.trim();
   assert(ogImage, `${check.file}: missing og:image`);
+  assert(
+    ogImage === expectedSocialImageUrl,
+    `${check.file}: unexpected og:image ${ogImage}`,
+  );
   await fs.access(getDistFilePathFromAbsoluteUrl(ogImage));
 
   const ogSecureImage = document
@@ -239,6 +249,33 @@ for (const check of pageChecks) {
   assert(
     ogSecureImage === ogImage,
     `${check.file}: og:image:secure_url does not match og:image`,
+  );
+
+  const ogImageType = document
+    .querySelector('meta[property="og:image:type"]')
+    ?.getAttribute("content")
+    ?.trim();
+  assert(
+    ogImageType === expectedSocialImage.type,
+    `${check.file}: unexpected og:image:type ${ogImageType}`,
+  );
+
+  const ogImageWidth = document
+    .querySelector('meta[property="og:image:width"]')
+    ?.getAttribute("content")
+    ?.trim();
+  assert(
+    ogImageWidth === expectedSocialImage.width,
+    `${check.file}: unexpected og:image:width ${ogImageWidth}`,
+  );
+
+  const ogImageHeight = document
+    .querySelector('meta[property="og:image:height"]')
+    ?.getAttribute("content")
+    ?.trim();
+  assert(
+    ogImageHeight === expectedSocialImage.height,
+    `${check.file}: unexpected og:image:height ${ogImageHeight}`,
   );
 
   const twitterCard = document

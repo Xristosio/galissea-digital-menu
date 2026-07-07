@@ -127,8 +127,8 @@ const createAsset = (
 };
 
 const createAltText = (index: number) => ({
-  captionEl: `Galissea Cafe Bar στη Γαλησσά Σύρου - φωτογραφία χώρου ${index}`,
-  captionEn: `Galissea Cafe Bar in Galissas, Syros - venue photo ${index}`,
+  captionEl: ``,
+  captionEn: ``,
 });
 
 export const galleryData: GalleryImage[] = gallerySources.map((source) => ({
