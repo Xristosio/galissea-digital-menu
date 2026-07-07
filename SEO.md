@@ -91,7 +91,7 @@ After deploy, verify these production URLs directly in the browser or via `curl`
 - `https://galissea.gr/46f887cd-564c-4880-ac3d-4a2eb699c7eb.txt`
 - `https://galissea.gr/`
 - `https://galissea.gr/en/`
-- `https://galissea.gr/galissea-og.jpg`
+- `https://galissea.gr/galissea-og.png`
 
 Expected results:
 

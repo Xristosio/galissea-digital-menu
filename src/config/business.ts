@@ -9,7 +9,7 @@ export const BRAND_LOGO_PATH = "/logo-512.png";
 export const BRAND_ICON_192_PATH = "/icon-192.png";
 export const BRAND_ICON_512_PATH = "/icon-512.png";
 export const APPLE_TOUCH_ICON_PATH = "/apple-touch-icon.png";
-export const SOCIAL_PREVIEW_IMAGE_PATH = "/galissea-og.jpg";
+export const SOCIAL_PREVIEW_IMAGE_PATH = "/galissea-og.png";
 
 export const BUSINESS_PHONE_DISPLAY = "+30 22810 45686";
 export const BUSINESS_PHONE_URI = "tel:+302281045686";

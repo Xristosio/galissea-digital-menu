@@ -21,7 +21,8 @@ const pageChecks = [
     file: "index.html",
     expectedLang: "el-GR",
     expectedCanonical: `${INDEXNOW_SITE_URL}/`,
-    expectedRobots: "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+    expectedRobots:
+      "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
     requiresH1: true,
     requiresSchema: true,
   },
@@ -29,7 +30,8 @@ const pageChecks = [
     file: path.join("en", "index.html"),
     expectedLang: "en",
     expectedCanonical: `${INDEXNOW_SITE_URL}/en/`,
-    expectedRobots: "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
+    expectedRobots:
+      "index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1",
     requiresH1: true,
     requiresSchema: true,
   },
@@ -51,7 +53,7 @@ const requiredRootFiles = [
   "apple-touch-icon.png",
   "icon-192.png",
   "icon-512.png",
-  "galissea-og.jpg",
+  "galissea-og.png",
   `${INDEXNOW_KEY}.txt`,
 ];
 
@@ -63,8 +65,7 @@ const requiredSchemaTypes = [
   "BreadcrumbList",
 ];
 
-const readText = async (file) =>
-  fs.readFile(path.join(distDir, file), "utf8");
+const readText = async (file) => fs.readFile(path.join(distDir, file), "utf8");
 
 const assert = (condition, message) => {
   if (!condition) {
@@ -88,10 +89,12 @@ const getDistFilePathFromAbsoluteUrl = (url) => {
 };
 
 const getAlternateLinks = (document) =>
-  [...document.querySelectorAll('link[rel="alternate"][hreflang]')].map((link) => ({
-    hrefLang: link.getAttribute("hreflang"),
-    href: link.getAttribute("href"),
-  }));
+  [...document.querySelectorAll('link[rel="alternate"][hreflang]')].map(
+    (link) => ({
+      hrefLang: link.getAttribute("hreflang"),
+      href: link.getAttribute("href"),
+    }),
+  );
 
 const getSchemaEntries = (document) =>
   [...document.querySelectorAll('script[type="application/ld+json"]')].flatMap(
@@ -146,7 +149,9 @@ const verifySitemap = async () => {
     `${INDEXNOW_SITE_URL}/`,
     `${INDEXNOW_SITE_URL}/en/`,
   ]) {
-    const block = urlBlocks.find((value) => value.includes(`<loc>${expectedCanonical}</loc>`));
+    const block = urlBlocks.find((value) =>
+      value.includes(`<loc>${expectedCanonical}</loc>`),
+    );
 
     assert(block, `sitemap.xml: missing URL block for ${expectedCanonical}`);
 
@@ -162,7 +167,10 @@ const verifySitemap = async () => {
 };
 
 const verifyIndexNowKeyFile = async () => {
-  const relativePath = INDEXNOW_KEY_LOCATION.replace(`${INDEXNOW_SITE_URL}/`, "");
+  const relativePath = INDEXNOW_KEY_LOCATION.replace(
+    `${INDEXNOW_SITE_URL}/`,
+    "",
+  );
   const keyContents = (await readText(relativePath)).trim();
 
   assert(
