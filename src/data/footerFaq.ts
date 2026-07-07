@@ -76,8 +76,8 @@ export const FOOTER_FAQ_ITEMS: FooterFaqItem[] = [
       en: "Breakfast kitchen hours",
     },
     answer: {
-      el: "Οι ώρες της κουζίνας για το πρωινό είναι μέχρι τη 13:00 το μεσημέρι.",
-      en: "Breakfast kitchen hours are until 13:00.",
+      el: "Οι ώρες της κουζίνας για το πρωινό είναι μέχρι τη 11:30.",
+      en: "Breakfast kitchen hours are until 11:30.",
     },
   },
 ];
