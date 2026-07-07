@@ -5,7 +5,7 @@ export const DEFAULT_EMBED_MAPS_URL =
 export const DEFAULT_GOOGLE_PLACE_ID = "ChIJMdffDT59ohQRcaoqm2WCgus";
 export const DEFAULT_WRITE_REVIEW_URL = `https://search.google.com/local/writereview?placeid=${DEFAULT_GOOGLE_PLACE_ID}`;
 export const DEFAULT_RATING_VALUE = "4.7";
-export const DEFAULT_RATING_COUNT = "49";
+export const DEFAULT_RATING_COUNT = "57";
 
 type MapsEnv = {
   VITE_GOOGLE_MAPS_EMBED_URL?: string;
