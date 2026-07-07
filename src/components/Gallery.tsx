@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLang } from "@/context/lang-context-core";
 import { galleryData, type GalleryImage } from "@/data/gallery";
 
@@ -18,6 +18,7 @@ const Gallery = () => {
   const reduceMotion = useReducedMotion();
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   const [activeImage, setActiveImage] = useState<GalleryImage | null>(null);
+  const galleryRef = useRef<HTMLElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   const primaryImages = galleryData.slice(0, MAIN_IMAGE_COUNT);
@@ -30,9 +31,36 @@ const Gallery = () => {
           ...galleryData.slice(0, Math.max(0, 2 - remainingImages.length)),
         ];
 
-  const markLoaded = (key: string) => {
+  const markLoaded = useCallback((key: string) => {
     setLoadedImages((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
-  };
+  }, []);
+
+  const revealCompletedImages = useCallback(() => {
+    const images = galleryRef.current?.querySelectorAll<HTMLImageElement>(
+      "img[data-gallery-load-key]",
+    );
+    if (!images?.length) return;
+
+    const completedKeys = Array.from(images)
+      .filter((image) => image.complete)
+      .map((image) => image.dataset.galleryLoadKey)
+      .filter((key): key is string => Boolean(key));
+
+    if (!completedKeys.length) return;
+
+    setLoadedImages((prev) => {
+      let changed = false;
+      const next = { ...prev };
+
+      for (const key of completedKeys) {
+        if (next[key]) continue;
+        next[key] = true;
+        changed = true;
+      }
+
+      return changed ? next : prev;
+    });
+  }, []);
 
   const openLightbox = (image: GalleryImage, trigger?: HTMLButtonElement) => {
     trigger?.blur();
@@ -42,6 +70,10 @@ const Gallery = () => {
   const closeLightbox = () => {
     setActiveImage(null);
   };
+
+  useEffect(() => {
+    revealCompletedImages();
+  }, [revealCompletedImages]);
 
   useEffect(() => {
     if (!activeImage) return;
@@ -119,7 +151,7 @@ const Gallery = () => {
   }, [activeImage]);
 
   return (
-    <section id="gallery" className="px-4 py-12">
+    <section id="gallery" ref={galleryRef} className="px-4 py-12">
       <div className="mx-auto max-w-5xl">
         <div className="mb-6 text-center">
         <motion.h2
@@ -174,6 +206,7 @@ const Gallery = () => {
                 decoding={index === 0 ? "sync" : "async"}
                 width={image.image.width}
                 height={image.image.height}
+                data-gallery-load-key={loadKey}
                 onLoad={() => markLoaded(loadKey)}
                 onError={() => markLoaded(loadKey)}
               />
@@ -227,6 +260,7 @@ const Gallery = () => {
                     decoding="async"
                     width={image.image.width}
                     height={image.image.height}
+                    data-gallery-load-key={loadKey}
                     onLoad={() => markLoaded(loadKey)}
                     onError={() => markLoaded(loadKey)}
                   />
